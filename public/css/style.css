@@ -14,5 +14,103 @@
 
 }
 
+.slide-link {
+    color: white;
+    text-decoration: none;
+}
 
+.slide-link:hover {
+    text-decoration: underline;
+}
+
+
+.comment_head {
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.comment_body {
+    margin-top: 10px;
+}
+
+.comment {
+    list-style: none;
+}
+
+.reply {
+    text-decoration: underline;
+    float: right; cursor: pointer;
+}
+
+#form_comment {
+    margin: 20px;
+}
+
+#form_comment_header {
+    cursor: pointer;
+    color: #2a88bd;
+}
+#form_comment_header:hover {
+    text-decoration: underline;
+}
+
+.nested_comment {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.comment_head_right {
+    float: right;
+    margin-right: 30px;
+}
+
+.rate-btn {
+    background-color: lightsteelblue;
+}
+
+.rate-up {
+    color: green;
+}
+
+.rate-down {
+    color: red;
+}
+
+.cursor-block {
+    cursor: no-drop!important;
+}
+
+.rate-div {
+    display: inline-block;
+}
+
+.close {
+    margin-left: 10px;
+    margin-right: 10px;
+    float: right;
+    color:red;!important;
+}
+
+.comment_head_deleted {
+    background-color: salmon;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown {
+    margin-right: 100px;
+}
+
+.mar-left {
+    margin-left: auto;
+}
+
+#navbarNav2 {
+    max-width: 200px;
+}
+
+.material-icons {
+    font-size: 19px;!important;
+}
 

@@ -36,6 +36,37 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Role', 'user_role', 'user_id', 'role_id');
     }
 
+    public function comment()
+    {
+        return $this->hasMany('App\Models\Comment');
+    }
+
+    public function news()
+    {
+        return $this->hasMany('App\Models\News');
+    }
+
+    public function rated_comment()
+    {
+        return $this->belongsToMany('App\Models\Comment', 'commentRate_user', 'user_id', 'comment_id')
+                    ->withPivot('rate')
+                    ->withTimestamps();
+    }
+
+    public function rated_down()
+    {
+        return $this->belongsToMany('App\Models\Comment', 'commentRate_user', 'user_id', 'comment_id')
+            ->wherePivot('rate', 0)
+            ->withTimestamps();
+    }
+
+    public function rated_up()
+    {
+        return $this->belongsToMany('App\Models\Comment', 'commentRate_user', 'user_id', 'comment_id')
+            ->wherePivot('rate', 1)
+            ->withTimestamps();
+    }
+
     public function isAdmin()
     {
         if ($this->role[0]->id == 1){

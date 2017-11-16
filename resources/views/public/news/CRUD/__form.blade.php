@@ -10,10 +10,10 @@
         @endforeach
     @endif
 
-    <div class="form-group">
-        <h4 style="margin-top: 20px;">Тэги для статьи</h4>
-        {!! Form::select('tags[][name]', $tags, $tags_owned,  ['class' => 'form-control', 'id' => 'tags', 'multiple'=>'multiple']) !!}
-    </div>
+        <div class="form-group">
+            <h4 style="margin-top: 20px;">Тэги для статьи</h4>
+            {!! Form::select('tags[][name]', $tags, $tags_owned,  ['class' => 'form-control', 'id' => 'tags', 'multiple'=>'multiple']) !!}
+        </div>
     @if ($errors->get('category'))
         @foreach($errors->get('category') as $item)
             <div class="alert alert-danger">
@@ -21,6 +21,7 @@
             </div>
         @endforeach
     @endif
+
 
     @if(isset($news->img_title))
         <img src="{{ asset('storage/images/' . $news->img_title) }}">
@@ -39,7 +40,7 @@
 
     <div class="form-group">
         <h4 style="margin-top: 20px;">Выберите категорию</h4>
-        {!! Form::select('category_id', $category->toArray(), null, ['class' => 'form-control', 'id' => 'category_id']) !!}
+        {!! Form::select('category_id', $category_creation->toArray(), null, ['class' => 'form-control', 'id' => 'category_id']) !!}
     </div>
     @if ($errors->get('category_id'))
         @foreach($errors->get('category_id') as $item)

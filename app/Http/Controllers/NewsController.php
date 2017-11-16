@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-
+use App\Http\Controllers\Admin\UploadImageController;
 use App\Models\{
-    News, Category
+    News, Category, Tag
 };
 use App\Rules\alpha_num_spaces;
 use Illuminate\Http\Request;
@@ -24,10 +24,16 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = News::get();
+        if(Auth::user()->isAdmin()){
+
+            $news = News::get();
+        } else {
+
+            $news = News::where('user_id', Auth::user()->id)->get();
+        }
 
 
-        return view('admin.news.index', compact('news'));
+        return view('public.news.CRUD.index', compact('news'));
     }
 
     /**
@@ -37,10 +43,15 @@ class NewsController extends Controller
      */
     public function create()
     {
-        $category = Category::pluck('name', 'id');
-        $category->prepend('Все категории');
+        $category_creation = Category::pluck('name', 'id');
+        $category_creation->prepend('Все категории');
 
-        return view('admin.news.create', compact('category'));
+        $category = Category::with('news')->get();
+
+        $tags = Tag::pluck('name');
+
+
+        return view('public.news.CRUD.create', compact('category', 'category_creation', 'tags'));
     }
 
     /**
@@ -51,6 +62,8 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
+
+
         $img_title = UploadImageController::uploadImage($request->img_title, true);
 
         if ($img_title === false){
@@ -60,7 +73,8 @@ class NewsController extends Controller
             return redirect()->back()->withInput();
         }
 
-            $news = News::firstOrNew(
+
+        $news = News::firstOrNew(
             ['slug' => str_slug($request->title)],
                 [
                     'title'       => $request->title,
@@ -76,6 +90,9 @@ class NewsController extends Controller
 
                 $news->save();
 
+                $tags = $this->attachTags($request->tags);
+                $news->tag()->attach($tags);
+
             } catch (\Exception $e){
 
                 session()->flash('flash_message_error', 'Что-то пошло не так попробуйте еще раз!');
@@ -85,7 +102,7 @@ class NewsController extends Controller
 
             session()->flash('flash_message', 'Успешно!');
 
-            return redirect()->action('Admin\NewsController@index');
+            return redirect()->action('NewsController@index');
         } else {
 
             session()->flash('flash_message_error', 'Статья с таким заголовком уже существует!');
@@ -105,7 +122,7 @@ class NewsController extends Controller
     {
         $news = $news->where('slug', $slug)->first();
 
-        return view('admin.news.show', compact('news'));
+        return view('public.news.CRUD.show', compact('news'));
     }
 
     /**
@@ -117,10 +134,23 @@ class NewsController extends Controller
     public function edit($slug, News $news)
     {
         $news = $news->where('slug', $slug)->first();
-        $category = Category::pluck('name', 'id');
 
+        $category_creation = Category::pluck('name', 'id');
+        $category_creation->prepend('Все категории');
 
-        return view('admin.news.edit', compact('news', 'category'));
+        $category = Category::with('news')->get();
+
+        $tags = Tag::pluck('name', 'id');
+
+        $tags_owned = $news->tag->pluck('name', 'id');
+
+        return view('public.news.CRUD.edit', compact(
+            'news',
+            'category',
+            'category_creation',
+            'tags',
+            'tags_owned'
+        ));
     }
 
     /**
@@ -142,13 +172,18 @@ class NewsController extends Controller
             if($request->hasFile('img_title')){
 
                 $img_title = UploadImageController::uploadImage($request->img_title, true);
+
                 if ($img_title !== false){
-                $img_title = basename($img_title);
+
+                    $img_title = basename($img_title);
+
                 } else {
 
                     session()->flash('flash_message_error', 'При загрузке изображения что-то пошло не такб попробуйте еще раз!');
 
-                    return redirect()->back()->withInput();                }
+                    return redirect()->back()->withInput();
+                }
+
             } else {
                 $img_title = $news->img_title;
             }
@@ -164,6 +199,8 @@ class NewsController extends Controller
             try {
 
                 $news->save();
+                $tags = $this->syncTags($request->tags);
+                $news->tag()->sync($tags);
 
             } catch (\Exception $e){
 
@@ -172,7 +209,7 @@ class NewsController extends Controller
                 return redirect()->back()->withInput();
             }
 
-            return redirect()->action('Admin\NewsController@index');
+            return redirect()->action('NewsController@index');
         } else {
 
             session()->flash('flash_message_error', 'Статья с таким заголовком уже существует, придумайте другой заголовок!');
@@ -191,6 +228,26 @@ class NewsController extends Controller
     {
         $news->destroy($id);
 
-        return redirect()->action('Admin\NewsController@index');
+        return redirect()->action('NewsController@index');
+    }
+
+
+
+    private function attachTags($request_tags)
+    {
+        foreach ($request_tags as $tag){
+            $tags_ids[] = Tag::firstOrCreate($tag)->id;
+        }
+
+        return $tags_ids;
+    }
+
+    private function syncTags($request_tags)
+    {
+        foreach ($request_tags as $tag){
+            $tags_ids[] = Tag::firstOrCreate($tag)->id;
+        }
+
+        return $tags_ids;
     }
 }

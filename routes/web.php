@@ -11,27 +11,25 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/', 'IndexController@index');
 
-Route::post('upload_image', 'Admin\UploadImageController@store');
+Route::group(['prefix' => 'news'], function (){
+    Route::get('/', 'NewsController@index');
+    Route::get('/create', 'NewsController@create');
+    Route::get('/{slug}', 'NewsController@show');
+    Route::get('/{slug}/edit', 'NewsController@edit');
+    Route::post('/', 'NewsController@store');
+    Route::put('/{id}', 'NewsController@update');
+    Route::delete('/{id}', 'NewsController@destroy');
+});
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin']], function (){
-    Route::get('/', 'Admin\IndexController@index');
-    Route::get('/css-editor', 'Admin\CssEditorController@index');
-
-//    function (){
-//
-//        if (Storage::disk('local')->exists('custom_css/colors.json') == true) {
-//            $colors = json_decode(Storage::disk('local')->get('custom_css/colors.json'), true);
-//        } else {
-//            $colors = [];
-//        }
-//        return view('admin.index', ['title' => 'Admin panel', 'colors' => $colors]);
-//    });
-
-
-    Route::group(['prefix' => 'category', 'namespace' => 'Admin'], function (){
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin'], 'namespace' => 'Admin'], function (){
+    Route::get('/', 'IndexController@index');
+    Route::get('/css-editor', 'CssEditorController@index');
+    Route::group(['prefix' => 'category'], function (){
         Route::get('/', 'CategoryController@index');
         Route::get('/create', 'CategoryController@create');
         Route::get('/{slug}/edit', 'CategoryController@edit');
@@ -40,7 +38,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin']], 
         Route::delete('/{id}', 'CategoryController@destroy');
     });
 
-    Route::group(['prefix' => 'news', 'namespace' => 'Admin'], function (){
+    Route::group(['prefix' => 'news'], function (){
         Route::get('/', 'NewsController@index');
         Route::get('/create', 'NewsController@create');
         Route::get('/{slug}', 'NewsController@show');
@@ -51,16 +49,37 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin']], 
     });
 });
 
-Auth::routes();
+Route::group(['prefix' => 'api', 'namespace' => 'Admin'], function (){
+    Route::group(['prefix' => 'ajax'], function (){
+        Route::post('upload_image', 'UploadImageController@store');
 
-Route::get('/home', 'HomeController@index')->name('home');
+        Route::group(['prefix' => 'comment', 'middleware' => 'auth'], function (){
+            Route::post('/', 'CommentController@set');
+            Route::get('/', 'CommentController@get');
+            Route::delete('/{id}', 'CommentController@destroy');
 
-Route::get('/css/custom.css', 'Admin\DynamicCssController@get');
-Route::post('/css/custom.css', 'Admin\DynamicCssController@post');
-Route::delete('/css/custom.css', 'Admin\DynamicCssController@destroy');
+            Route::group(['prefix' => 'rate'], function () {
+                Route::post('/up', 'CommentController@rate_up');
+                Route::post('/down', 'CommentController@rate_down');
+            });
 
-Auth::routes();
+        });
 
-Route::get('/home', 'HomeController@index')->name('home');
 
+
+    });
+    Route::group(['prefix' => 'other'], function (){
+        Route::get('css/custom.css', 'DynamicCssController@get');
+        Route::post('css/custom.css', 'DynamicCssController@post');
+        Route::delete('css/custom.css', 'DynamicCssController@destroy');
+    });
+
+
+});
+
+
+Route::get('/{slug}', 'IndexController@newsFromCategory');
 Route::get('/{category}/{slug}', 'IndexController@show');
+
+//Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');

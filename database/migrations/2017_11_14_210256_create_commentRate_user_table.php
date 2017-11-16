@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentTable extends Migration
+class CreateCommentRateUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,15 @@ class CreateCommentTable extends Migration
      */
     public function up()
     {
-        Schema::create('comment', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('body');
-            $table->integer('rate_up')->unsigned()->default(0);
-            $table->integer('rate_down')->unsigned()->default(0);
-            $table->integer('parent_id')->unsigned()->nullable(true);
+        Schema::create('commentRate_user', function (Blueprint $table) {
+            $table->integer('comment_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->integer('news_id')->unsigned();
-            $table->softDeletes();
+            $table->boolean('rate')->unsigned();
             $table->timestamps();
 
-            $table->foreign('news_id')
+            $table->foreign('comment_id')
                 ->references('id')
-                ->on('news')
+                ->on('comment')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -35,6 +30,8 @@ class CreateCommentTable extends Migration
                 ->on('user')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+
+            $table->unique(['user_id', 'comment_id']);
         });
     }
 
@@ -45,6 +42,6 @@ class CreateCommentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comment');
+        Schema::dropIfExists('commentRate_user');
     }
 }

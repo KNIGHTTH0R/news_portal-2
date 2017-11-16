@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Image;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\UploadedFile;
-
+use Intervention\Image\Facades\Image;
 class UploadImageController extends Controller
 {
 
@@ -57,15 +57,40 @@ class UploadImageController extends Controller
 
 
 
-    public static function uploadImage(UploadedFile $image)
+    public static function uploadImage(UploadedFile $image, $title = false)
     {
         $extensionAllowed = ['png', 'jpeg', 'jpg'];
+
         if($image->isValid()) {
-            if(in_array($image->extension(), $extensionAllowed)) {
-                $image->store('public/images');
+            if (in_array($image->extension(), $extensionAllowed)) {
+                $path = $image->store('public/images');
+                $img = Image::make($image);
+                if ($title != true) {
+
+                    if ($img->width() > 800) {
+                        // resize the image to a width of 300 and constrain aspect ratio (auto height)
+                        $img->resize(800, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+
+                    if ($img->height() > 550) {
+                        // resize the image to a width of 300 and constrain aspect ratio (auto height)
+                        $img->resize(null, 550, function ($constraint) {
+                            $constraint->aspectRatio();
+                        });
+                    }
+                } else {
+                    $img->resize(1100, 550);
+                }
+
+                $img->save('storage/images/' . $image->hashName());
 
                 return 'storage/images/' . $image->hashName();
+            } else {
+                return false;
             }
+
         }
 
     }

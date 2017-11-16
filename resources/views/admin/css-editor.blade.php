@@ -4,14 +4,14 @@
     <div class="container">
    <div class="row">
         <div class="col-2 offset-md-3">
-            {!! Form::open(['url' => url('css/custom.css')]) !!}
+            {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
             <div class="form-group">
                 {!! Form::label('body[background-color]', 'Выберите цвет фона:') !!}
                 {!! Form::select('body[background-color]', $active['body'] + $colors, null, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
             </div>
             {!! Form::close() !!}
 
-            {!! Form::open(['url' => url('css/custom.css')]) !!}
+            {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
             <div class="form-group">
                 {!! Form::label('nav[background-color]', 'Выберите цвет шапки сайта:') !!}
                 {!! Form::select('nav[background-color]', $active['nav'] + $colors, null, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
@@ -20,7 +20,7 @@
 
         </div>
             <div class="col-3">
-            {!! Form::open(['url' => url('css/custom.css')]) !!}
+            {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
             {!! Form::hidden('native', true) !!}
             <div class="form-group">
                 {!! Form::label('selector', 'Селектор:') !!}
@@ -52,7 +52,7 @@
 
 
        <div class="col-2 offset-md-5">
-           {!! Form::open(['url' => url('css/custom.css'), 'method' => 'delete']) !!}
+           {!! Form::open(['url' => action('Admin\DynamicCssController@destroy'), 'method' => 'delete']) !!}
            <div class="form-group">
                {!! Form::hidden('reset', true, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
            </div>

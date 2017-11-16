@@ -14,11 +14,16 @@
                 <div class="carousel-inner">
 
                     @foreach($slide as $key => $item)
+
                     <div class="carousel-item {{ $key == 0?'active':'' }}">
-                        <img class="d-block w-100" src="{{ asset('storage/images/'.$item->img_title) }}" alt="image of news title">
+                        <a href="{{ url($item->category->slug.'/'.$item->slug) }}">
+                            <img class="d-block w-100" src="{{ asset('storage/images/'.$item->img_title) }}" alt="image of news title">
+                        </a>
 
                         <div class="carousel-caption d-none d-md-block">
-                            <h3>{{ $item->title }}</h3>
+                            <a href="{{ url($item->category->slug.'/'.$item->slug) }}">
+                                <h3 class="slide-link">{{ $item->title }}</h3>
+                            </a>
                             {{--<p>...</p>--}}
                         </div>
                     </div>
