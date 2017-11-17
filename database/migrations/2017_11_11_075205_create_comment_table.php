@@ -21,6 +21,7 @@ class CreateCommentTable extends Migration
             $table->integer('parent_id')->unsigned()->nullable(true);
             $table->integer('user_id')->unsigned();
             $table->integer('news_id')->unsigned();
+            $table->boolean('allowed')->nullable(true);
             $table->softDeletes();
             $table->timestamps();
 

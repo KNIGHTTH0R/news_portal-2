@@ -42,7 +42,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', new alpha_num_spaces, 'unique:category']
+            'name'      => ['required', new alpha_num_spaces, 'unique:category'],
+            'protected' => 'boolean'
         ]);
 
         $data = $request->except(['_token']);

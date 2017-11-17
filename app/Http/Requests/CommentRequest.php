@@ -30,11 +30,24 @@ class CommentRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'comment' => 'required|max:255',
-            'news_id' => 'required',
-            'parent_id' => ['sometimes','required', Rule::notIn(['0'])]
-        ];
+
+        switch ($this->method()){
+
+            case 'POST':
+                return [
+                    'comment' => 'required|max:255',
+                    'news_id' => 'required',
+                    'parent_id' => ['sometimes','required', Rule::notIn(['0'])]
+                ];
+                break;
+
+            case 'PATCH':
+                return [
+                    'comment' => 'required|max:255',
+                ];
+                break;
+        }
+
     }
 
     /**

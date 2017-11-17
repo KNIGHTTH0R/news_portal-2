@@ -10,6 +10,10 @@
         @endforeach
     @endif
 
+    <div class="form-group">
+        {!! Form::checkbox('analytical', '1') !!} Аналитическая статья (целиком доступна только для авторизованных пользователей)
+    </div>
+
         <div class="form-group">
             <h4 style="margin-top: 20px;">Тэги для статьи</h4>
             {!! Form::select('tags[][name]', $tags, $tags_owned,  ['class' => 'form-control', 'id' => 'tags', 'multiple'=>'multiple']) !!}

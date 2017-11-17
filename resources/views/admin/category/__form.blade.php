@@ -12,7 +12,7 @@
     @endif
 
 <div class="form-group">
-    {!! Form::checkbox('access', '1') !!} Только для авторизованных
+    {!! Form::checkbox('protected', '1') !!} Закрытая категория (целиком доступна только для авторизованных пользователей)
 </div>
 {!! Form::submit($submitButton, ['class' => 'btn btn-primary']) !!}
 

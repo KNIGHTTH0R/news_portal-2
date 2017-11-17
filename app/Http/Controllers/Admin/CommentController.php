@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
+use App\Models\News;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -110,18 +111,25 @@ class CommentController extends Controller
     public function set(CommentRequest $request, Comment $comment)
     {
         try {
+
             $id = $comment->create([
                 'body'      => $request->comment,
                 'user_id'   => Auth::user()->id,
                 'news_id'   => $request->news_id,
                 'parent_id' => $request->parent_id
             ])->id;
+
+            if (News::find($request->news_id)->category->protected){
+                $comment = $comment->find($id);
+                $comment->allowed = 0;
+                $comment->save();
+            }
+
+
         } catch (\Exception $e){
             return response('', 500);
 
         }
-
-
 
 
         return response(json_encode([
@@ -139,9 +147,34 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Comment $comment)
+    public function edit(CommentRequest $request,Comment $comment)
     {
-        //
+        try {
+            $comment = $comment->find($request->comment_id);
+            if(Auth::user()->id != $comment->user->id){
+
+                throw new \Exception('Кибер-полиция уже выехала за тобой');
+
+            }
+            if (Carbon::parse($comment->created_at)->addMinute() < Carbon::now()){
+
+                throw new \Exception('timeout, you can\'t modify message');
+
+            }
+
+            $comment->body = $request->comment;
+            $comment->save();
+
+        } catch (\Exception $e){
+
+            return response($e->getMessage(), 500);
+        }
+
+        return response(json_encode([
+            'text' => $request->comment,
+            'comment_id' => $request->comment_id,
+            'action'  => 'edit'
+        ]),200);
     }
 
     /**

@@ -19,6 +19,7 @@ class CreateNewsTable extends Migration
             $table->string('img_title');
             $table->string('slug')->unique();
             $table->text('body');
+            $table->boolean('analytical')->unsigned()->default(false);
             $table->integer('category_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->timestamps();

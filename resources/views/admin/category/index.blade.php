@@ -46,5 +46,5 @@
 @endsection
 
 @section('end_of_body')
-    <script src="{{ asset('js/admin.js') }}"></script>
+    {{--<script src="{{ asset('js/admin.js') }}"></script>--}}
 @endsection

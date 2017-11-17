@@ -30,6 +30,11 @@
                 <button type="button" class="close" data-id="{{$comment->id}}" data-del-comment id="del_comment_{{$comment->id}}">
                     <span aria-hidden="true">×</span>
                 </button>
+                        @if(\Carbon\Carbon::parse($comment->created_at)->addMinute() > \Carbon\Carbon::now())
+                            <span class="edit{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="edit_{{ $comment->id }}">
+                                                редактировать
+                                            </span>
+                        @endif
                     @else
                 <span class="reply{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="reply_{{ $comment->id }}">
                                         reply

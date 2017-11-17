@@ -1,9 +1,7 @@
 @extends('public.layouts.app')
 @section('pageTitle', 'title')
 @section('head')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         .material-icons {
             font-size: 19px;!important;
@@ -13,19 +11,37 @@
 @endsection
 @section('body')
 
-
-
     <div class="container">
         <div class="row">
-            <div class="mar-auto">
+            <div class="col-12 mar-auto">
                 <h4>{{ $news->title }}</h4>
-                <small>Категория: {{ $news->category->name }}</small>
+                <small>Категория: {{ $news->category->name }}</small><br>
+                <small>Автор: {{ $news->user->name }}</small><br>
 
-                <div>
+                <small><i>Тэги: </i>
+                    @if(empty($news->tag->pluck('name')->toArray()))
+                        {{ ' Отсутствуют' }}
+                    @else
+                        @foreach($news->tag->pluck('name')->toArray() as $item)
+                            <a href="{{ url('/tag/' . $item) }}">{{ $item }}</a>
+                        @endforeach
+                    @endif
+                </small>
+
+                <div class="">
                     @if(isset($news->img_title))
                         <img src="{{ asset('storage/images/' . $news->img_title) }}">
                     @endif
-                    {!!  $news->body !!}
+                    @if($news->analytical)
+                        @auth
+                            {!!  $news->body !!}
+                        @else
+                            {!!  mb_substr($news->body, 0, (strlen($news->body) / 4)) !!}
+                                    <h3>Это аналитическая статья чтобы прочитать целиком сначала авторизуйтесь.</h3>
+                        @endauth
+                     @else
+                          {!!  $news->body !!}
+                     @endif
                 </div>
 
             </div>
@@ -36,79 +52,72 @@
                 <hr>
                 <ul id="comment_area">
                 @if($comment_count > 0)
+                        @foreach($news->comment()->withTrashed()->where('parent_id', null)->orderBy('rate_up', 'DESC')->get() as $comment)
+                            @if ($comment->allowed == 1)
+                                @if($comment->trashed())
+                                    <li class="comment" id="comment_{{ $comment->id }}" data-owner="{{ $comment->user->name }}">
+                                        <div class="comment_head_deleted">
+                                            Пользователь <b>{{ $comment->user->name }}</b> удалил свой комментарий
+                                            {{ \Carbon\Carbon::parse($comment->deleted_at)->diffForHumans() }}
+                                        </div>
+                                        <div class="comment_body">
+                                        </div>
+                                        <hr>
+                                    </li>
 
-                        @foreach($news->comment()->withTrashed()->where('parent_id', null)->get() as $comment)
-
-
-                            @if($comment->trashed())
+                                    @if($comment->child()->withTrashed()->get()->isNotEmpty())
+                                        @include('public.layouts.__nested_comment', ['nested_comment' => $comment->child()->withTrashed()->get(), 'parent_id' => $comment->id])
+                                    @endif
+                                @else
                                 <li class="comment" id="comment_{{ $comment->id }}" data-owner="{{ $comment->user->name }}">
-                                    <div class="comment_head_deleted">
-                                        Пользователь <b>{{ $comment->user->name }}</b> удалил свой комментарий
-                                        {{ \Carbon\Carbon::parse($comment->deleted_at)->diffForHumans() }}
+                                    <div class="comment_head">
+                                        <b>{{ $comment->user->name }}</b>
+                                        {{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}
+                                        @if(Auth::check())
+                                            @if($comment->user->name == Auth::user()->name)
+
+                                            <button type="button" class="close" data-id="{{$comment->id}}" data-del-comment id="del_comment_{{$comment->id}}">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+
+                                            @if(\Carbon\Carbon::parse($comment->created_at)->addMinute() > \Carbon\Carbon::now())
+                                                <span class="edit{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="edit_{{ $comment->id }}">
+                                                    редактировать
+                                                </span>
+                                            @endif
+                                            @else
+                                            <span class="reply{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="reply_{{ $comment->id }}">
+                                                reply
+                                            </span>
+                                            @endif
+                                        @endif
+                                        <div class="comment_head_right">
+                                            <span class="rate-up" id="rate_up_comment_id_{{$comment->id}}">{{ $comment->rate_up }}</span>
+                                            <button type="button" class="btn btn-default btn-sm rate-btn{{ Auth::check() ? '': ' cursor-block' }}" id="rate_up_{{ $comment->id }}" data-rate-up data-id="{{ $comment->id }}">
+                                                <i class="material-icons">thumb_up</i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm rate-btn{{ Auth::check() ? '': ' cursor-block' }}" id="rate_down_{{ $comment->id }}" data-rate-down data-id="{{ $comment->id }}">
+                                                <i class="material-icons">thumb_down</i>
+                                            </button>
+                                            <span class="rate-down" id="rate_down_comment_id_{{$comment->id}}">{{ $comment->rate_down }}</span>
+                                        </div>
                                     </div>
-
-                                    <div class="comment_body">
-
-                                    </div>
-
-
+                                    <div class="comment_body">{{ $comment->body }}</div>
+                                    @if($comment->child->isNotEmpty())
+                                        @include('public.layouts.__nested_comment', ['nested_comment' => $comment->child, 'parent_id' => $comment->id])
+                                    @endif
                                     <hr>
                                 </li>
-
-
-                                @if($comment->child()->withTrashed()->get()->isNotEmpty())
-                                    @include('public.layouts.__nested_comment', ['nested_comment' => $comment->child()->withTrashed()->get(), 'parent_id' => $comment->id])
                                 @endif
-                            @else
-                            <li class="comment" id="comment_{{ $comment->id }}" data-owner="{{ $comment->user->name }}">
-                                <div class="comment_head">
-                                    <b>{{ $comment->user->name }}</b>
-                                    {{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}
-                                    @if(Auth::check())
-                                        @if($comment->user->name == Auth::user()->name)
-                                        <button type="button" class="close" data-id="{{$comment->id}}" data-del-comment id="del_comment_{{$comment->id}}">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                        @else
-                                        <span class="reply{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="reply_{{ $comment->id }}">
-                                            reply
-                                        </span>
-                                        @endif
-                                    @endif
-                                    <div class="comment_head_right">
-
-                                        <span class="rate-up" id="rate_up_comment_id_{{$comment->id}}">{{ $comment->rate_up }}</span>
-                                        <button type="button" class="btn btn-default btn-sm rate-btn{{ Auth::check() ? '': ' cursor-block' }}" id="rate_up_{{ $comment->id }}" data-rate-up data-id="{{ $comment->id }}">
-                                            <i class="material-icons">thumb_up</i>
-                                        </button>
-                                        <button type="button" class="btn btn-default btn-sm rate-btn{{ Auth::check() ? '': ' cursor-block' }}" id="rate_down_{{ $comment->id }}" data-rate-down data-id="{{ $comment->id }}">
-                                            <i class="material-icons">thumb_down</i>                                        </button>
-                                        <span class="rate-down" id="rate_down_comment_id_{{$comment->id}}">{{ $comment->rate_down }}</span>
-                                    </div>
-
-                                </div>
-                                <div class="comment_body">
-                                    {{ $comment->body }}
-                                </div>
-
-                                @if($comment->child->isNotEmpty())
-                                    @include('public.layouts.__nested_comment', ['nested_comment' => $comment->child, 'parent_id' => $comment->id])
-                                @endif
-
-
-                                <hr>
-                            </li>
                             @endif
-
                         @endforeach
-
-
                 @endif
                 </ul>
                 @auth
                 <div id="form_comment_area">
                     <form id="form_comment">
                         {{ csrf_field() }}
+
                         {{--{!! Form::hidden('news_id', $news->id) !!}--}}
                         {!! Form::hidden('news_id', $news->id) !!}
                         <div class="form-group">
@@ -132,9 +141,8 @@
                                  <div class="container" style="max-width: 300px">
                                  <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                                      {{ csrf_field() }}
-
                                      <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                         <label for="email" class="col-md-6 control-label">E-Mail Address</label>
+                                         <label for="email" class="col-md-7 control-label">E-Mail Address</label>
 
                                          <div class="col-md-10">
                                              <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
@@ -162,7 +170,7 @@
                                      </div>
 
                                      <div class="form-group">
-                                         <div class="col-md-6 col-md-offset-1">
+                                         <div class="col-md-7 col-md-offset-1">
                                              <div class="checkbox">
                                                  <label>
                                                      <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
@@ -190,12 +198,9 @@
                 @endauth
             </div>
             </div>
-
     </div>
 @endsection
 
 @section('end_of_body')
-    @auth
-<script src="{{ asset('js/public.js') }}"></script>
-    @endauth
+
 @endsection

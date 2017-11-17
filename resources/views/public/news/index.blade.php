@@ -3,10 +3,9 @@
 
 @section('body')
 
-
-
 <div class="container">
     <div class="row">
+
 
         @foreach($news as $article)
             <div class="col-12" style="margin-top: 100px">
@@ -20,11 +19,22 @@
 
                 <a class="btn btn-primary" href="{{ action('IndexController@show', ['category' => $article->category->slug, 'slug' => $article->slug]) }}">Читать дальше</a>
 
-                <p><i>Тэги:</i></p>
-                {{ implode(', ',$article->tag->pluck('name')->toArray()) }}
+                <p><i>Тэги: </i>
+                    @if(empty($article->tag->pluck('name')->toArray()))
+                        {{ ' Отсутствуют' }}
+                    @else
+                        @foreach($article->tag->pluck('name')->toArray() as $item)
+                            <a href="{{ url('/tag/' . $item) }}">{{ $item }}</a>
+                        @endforeach
+                    @endif
+                 </p>
 
             </div>
         @endforeach
+        <div class="container">
+{{--            {{ dd($news->onFirstPage()) }}--}}
+            {{ $news->links('vendor.pagination.default') }}
+        </div>
 
     </div>
 </div>
@@ -32,4 +42,5 @@
 @endsection
 
 @section('end_of_body')
+    <script src="{{ asset('js/public.js') }}"></script>
 @endsection

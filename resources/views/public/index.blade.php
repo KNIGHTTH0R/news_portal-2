@@ -2,7 +2,6 @@
 @section('pageTitle', 'News')
 @section('body')
     <div class="container">
-
         <div class="row">
             <div class="col-12 w-100">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -12,28 +11,17 @@
                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                 </ol>
                 <div class="carousel-inner">
-
                     @foreach($slide as $key => $item)
-
                     <div class="carousel-item {{ $key == 0?'active':'' }}">
                         <a href="{{ url($item->category->slug.'/'.$item->slug) }}">
                             <img class="d-block w-100" src="{{ asset('storage/images/'.$item->img_title) }}" alt="image of news title">
                         </a>
-
                         <div class="carousel-caption d-none d-md-block">
                             <a href="{{ url($item->category->slug.'/'.$item->slug) }}">
                                 <h3 class="slide-link">{{ $item->title }}</h3>
                             </a>
-                            {{--<p>...</p>--}}
                         </div>
                     </div>
-                    {{--<div class="carousel-item">--}}
-                        {{--<img class="d-block w-100" src="..." alt="Second slide">--}}
-                    {{--</div>--}}
-                    {{--<div class="carousel-item">--}}
-                        {{--<img class="d-block w-100" src="..." alt="Third slide">--}}
-                    {{--</div>--}}
-
                 @endforeach
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -47,7 +35,19 @@
             </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-3 mar-auto">
+                <h3>ТОП 3 новостей<h5>по комментариям</h5></h3>
+                <ul class="list-group">
+                @foreach($newsTop as $item)
+
+                    <li class="list-group-item"><a href="{{ action('IndexController@show', ['category' => $item->category->slug, 'slug' => $item->slug]) }}">
+                        {{ $item['title'] }}
+                        <span class="badge badge-secondary">{{ $item->comment_count }}</span>
+                        </a></li>
+                @endforeach
+                </ul>
+            </div>
+        </div>
     </div>
-
-
 @endsection

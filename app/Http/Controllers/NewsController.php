@@ -86,13 +86,15 @@ class NewsController extends Controller
                 ]
             );
         if ($news->exists == false){
+            if ($request->analytical){
+                $news->analytical = $request->analytical;
+            }
             try {
-
                 $news->save();
-
-                $tags = $this->attachTags($request->tags);
-                $news->tag()->attach($tags);
-
+                if (!is_null($request->tags)) {
+                    $tags = $this->attachTags($request->tags);
+                    $news->tag()->attach($tags);
+                }
             } catch (\Exception $e){
 
                 session()->flash('flash_message_error', 'Что-то пошло не так попробуйте еще раз!');
@@ -188,6 +190,7 @@ class NewsController extends Controller
                 $img_title = $news->img_title;
             }
 
+
             $news->fill([
                 'title' => $request->title,
                 'img_title' => $img_title,
@@ -196,11 +199,20 @@ class NewsController extends Controller
                 'user_id' => Auth::user()->id,
                 'body' => $request->body
             ]);
+            if ($request->analytical){
+                $news->analytical = $request->analytical;
+            } else {
+                $news->analytical = 0;
+            }
             try {
 
+
                 $news->save();
-                $tags = $this->syncTags($request->tags);
-                $news->tag()->sync($tags);
+                if (!is_null($request->tags)) {
+
+                    $tags = $this->syncTags($request->tags);
+                    $news->tag()->sync($tags);
+                }
 
             } catch (\Exception $e){
 

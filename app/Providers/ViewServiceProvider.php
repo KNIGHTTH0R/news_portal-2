@@ -17,7 +17,9 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('public.*', function($view)
         {
-            $view->with('category', \App\Models\Category::with('news')->get());
+            $view
+                ->with('category', \App\Models\Category::with('news')->get())
+                ->with('analytical', \App\Models\News::where('analytical', 1)->get());
         });
     }
 
