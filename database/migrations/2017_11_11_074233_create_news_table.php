@@ -22,6 +22,7 @@ class CreateNewsTable extends Migration
             $table->boolean('analytical')->unsigned()->default(false);
             $table->integer('category_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->integer('reads_count')->nullable(true);
             $table->timestamps();
 
 

@@ -19,6 +19,12 @@
             if (getCookie('subscribed') == undefined) {
                 setTimeout(subscribe_show, 15000);
             }
+            if (typeof is_news_page != 'undefined'){
+                active();
+                setInterval(active, 3000);
+            }
+
+
         };
         function subscribe_show() {
             $('#subscribe').modal('show');

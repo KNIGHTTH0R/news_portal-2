@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SubscribeRequest;
 use Illuminate\Http\Request;
 use App\Models\{
-    Category, Comment, News, Subscribe, Tag
+    ActiveClient, Category, Comment, News, Subscribe, Tag
 };
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +15,8 @@ class IndexController extends Controller
 {
     public function index()
     {
+
+
         $category = Category::with('news')->get();
 
         $slide = News::with('category')->latest()->limit(3)->get(['title', 'img_title', 'slug', 'category_id']);
@@ -115,6 +117,61 @@ class IndexController extends Controller
         $news = News::where('analytical', '1')->where('slug', $slug)->get();
 
         return view('public.news.index', compact('news'));
+    }
+
+    public function activeCheck(Request $request, News $news)
+    {
+
+
+
+
+        if($request->new_client == 1){
+
+            ActiveClient::where('last_seen_at', '<', Carbon::now()->subSeconds(10))->delete();
+
+            $news = $news->find($request->news_id);
+            if (is_null($news->reads_count)){
+                $news->reads_count = 1;
+                $news->save();
+            } else {
+                $news->reads_count++;
+                $news->save();
+            }
+        }
+
+        try {
+            ActiveClient::create([
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'token' => $request->_token,
+                'news_id' => $request->news_id,
+                'last_seen_at' => Carbon::now()
+            ]);
+        } catch (\Exception $e){
+            try {
+                ActiveClient::where('token', $request->_token)->update(['last_seen_at' => Carbon::now()]);
+            } catch (\Exception $e){
+
+                return json_encode([
+                    'reads_count' => News::where('id', $request->news_id)->get(['reads_count'])->first()->reads_count,
+                    'active_clients' => ActiveClient::where('last_seen_at', '>', Carbon::now()->subSeconds(10))->distinct(['token'])->count()
+                ]);
+            }
+
+            return json_encode([
+                'reads_count' => News::where('id', $request->news_id)->get(['reads_count'])->first()->reads_count,
+                'active_clients' => ActiveClient::where('last_seen_at', '>', Carbon::now()->subSeconds(10))->distinct(['token'])->count()
+            ]);
+
+        }
+
+
+        return json_encode([
+            'reads_count' => News::where('id', $request->news_id)->get(['reads_count'])->first()->reads_count,
+            'active_clients' => ActiveClient::where('last_seen_at', '>', Carbon::now()->subSeconds(10))->distinct(['token'])->count()
+        ]);
+
+
     }
 
 }

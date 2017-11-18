@@ -61,6 +61,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin'], '
 Route::group(['prefix' => 'api'], function (){
     Route::group(['prefix' => 'ajax'], function (){
         Route::post('upload_image', 'Admin\UploadImageController@store');
+        Route::post('search', 'IndexController@searchTag');
+        Route::post('active_check', 'IndexController@activeCheck');
+
         Route::group(['prefix' => 'comment', 'middleware' => 'auth', 'namespace' => 'Admin'], function (){
             Route::post('/', 'CommentController@set');
             Route::get('/', 'CommentController@get');
@@ -73,7 +76,6 @@ Route::group(['prefix' => 'api'], function (){
             });
 
         });
-        Route::post('search', 'IndexController@searchTag');
     });
     Route::group(['prefix' => 'other', 'namespace' => 'Admin'], function (){
         Route::get('css/custom.css', 'DynamicCssController@get');

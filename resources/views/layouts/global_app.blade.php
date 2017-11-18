@@ -17,6 +17,12 @@
 <script>
     window.onbeforeunload = function() {
 
+        if (getCookie('active') != undefined){
+            var date = new Date(0);
+            document.cookie = "active=1; path=/; expires=" + date.toUTCString();
+        }
+
+
         return true;
     };
 </script>

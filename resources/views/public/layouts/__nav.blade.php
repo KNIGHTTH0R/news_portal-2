@@ -10,7 +10,9 @@
                     <a class="navbar-brand" href="{{ url('admin') }}">Админ панель</a>
                 @endif
             @endauth
+            @if (url()->current() != url('/'))
                     <a class="navbar-brand btn btn-primary backToSite" href="{{ url('/') }}">На главную</a>
+            @endif
         </div>
 
         <div class="mar-auto btn-group">

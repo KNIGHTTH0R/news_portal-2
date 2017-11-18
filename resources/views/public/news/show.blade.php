@@ -47,6 +47,16 @@
             </div>
         </div>
             <div class="row">
+                <div class="col-4 offset-md-9">
+                    <h3>Сейчас читают<span class="badge badge-secondary" id="active_clients"></span></h3>
+                    <h3>Всего просмотров<span class="badge badge-secondary" id="reads_count"></span></h3>
+                </div>
+
+                {{--<div class="col-4 ">--}}
+                    {{--<h3>Всего просмотров<span class="badge badge-secondary">New</span></h3>--}}
+                {{--</div>--}}
+            </div>
+            <div class="row">
             <div class="col-12 mar-auto">
                 <h3>Комментарии {{ $comment_count  }}</h3>
                 <hr>
@@ -197,8 +207,58 @@
                          </div>
                 @endauth
             </div>
+
             </div>
     </div>
+    
+    <script type="text/javascript">
+        var is_news_page = true;
+        
+        function active() {
+            var new_client;
+            if (getCookie('active') == undefined){
+                document.cookie = "active=1; path=/";
+                new_client = 1;
+            } else {
+                new_client = 0;
+            }
+
+            var data = new FormData();
+
+            data.set('_token', csrf_token);
+            data.set('news_id', {{ $news->id }});
+            data.set('new_client', new_client);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/ajax/active_check");
+            // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState != 4) return;
+
+                if (this.status == 200) {
+                    document.getElementById('active_clients');
+                    document.getElementById('reads_count');
+
+                    var response = JSON.parse(this.responseText);
+
+                    if (document.getElementById('active_clients') != undefined){
+                        document.getElementById('active_clients').innerHTML = response.active_clients;
+                    }
+                    if (document.getElementById('reads_count') != undefined){
+                        document.getElementById('reads_count').innerHTML = response.reads_count;
+                    }
+
+
+                }
+
+                if (this.status == 422) {
+                }
+            };
+
+            xhr.send(data);
+        }
+    </script>
 @endsection
 
 @section('end_of_body')

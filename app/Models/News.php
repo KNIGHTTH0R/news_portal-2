@@ -27,6 +27,11 @@ class News extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function active()
+    {
+        return $this->hasMany('App\Models\ActiveClient');
+    }
+
     public function tag()
     {
         return $this->belongsToMany('App\Models\Tag', 'news_tag', 'news_id', 'tag_id')
