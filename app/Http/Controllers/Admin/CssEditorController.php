@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Storage;
 
 class CssEditorController extends Controller
 {
+    /**
+     * If json file with custom css not exists - creating it.
+     *
+     * Setting background color to Html body or nav.
+     *
+     * Names and hex-values storing in .json,
+     * chosen color of body or nav storing in .json, too.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function index()
     {
 
@@ -17,12 +28,15 @@ class CssEditorController extends Controller
             $colors = json_decode(Storage::disk('local')->get('custom_css/colors.json'), true);
 
             if (Storage::disk('local')->exists('custom_css/css.json') == true) {
-                $choosen = json_decode(Storage::disk('local')->get('custom_css/css.json'), true);
-                isset($choosen['body'])?
-                    $active['body'][$choosen['body']['background-color']] = $colors[$choosen['body']['background-color']]:
+
+                $chosen = json_decode(Storage::disk('local')->get('custom_css/css.json'), true);
+
+                isset($chosen['body'])?
+                    $active['body'][$chosen['body']['background-color']] = $colors[$chosen['body']['background-color']]:
                     $active['body'] = [];
-                isset($choosen['.nav-color'])?
-                    $active['nav'][$choosen['.nav-color']['background-color']] = $colors[$choosen['.nav-color']['background-color']]:
+
+                isset($chosen['.nav-color'])?
+                    $active['nav'][$chosen['.nav-color']['background-color']] = $colors[$chosen['.nav-color']['background-color']]:
                     $active['nav'] = [];
             } else {
 
@@ -30,9 +44,8 @@ class CssEditorController extends Controller
                 $active['nav'] = [];
             }
 
-
-
         } else {
+
             $colors[] = [];
             $active['body'] = null;
             $active['nav'] = null;

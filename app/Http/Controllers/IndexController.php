@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
 {
+    /**
+     * Render site root page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function index()
     {
-
-
         $category = Category::with('news')->get();
 
         $slide = News::with('category')->latest()->limit(3)->get(['title', 'img_title', 'slug', 'category_id']);
@@ -26,7 +30,16 @@ class IndexController extends Controller
         return view('public.index', compact('category', 'slide', 'newsTop'));
     }
 
-    public function show($category, $slug, News $news)
+    /**
+     * Render page with specified article
+     *
+     * @param $category | just for pretty url
+     * @param $slug
+     * @param News $news
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
+    public function show($category_slug = null, $slug, News $news)
     {
         if (preg_match( '/[\p{Cyrillic}]/u', $slug)){
 
@@ -41,7 +54,6 @@ class IndexController extends Controller
         }
 
         $category = Category::with('news')->get();
-
         $comment_count = $news->comment->where('allowed','!=', '0')->count();
 
         foreach($news->comment()->withTrashed()->where('parent_id', null)->get() as $comment){
@@ -59,13 +71,23 @@ class IndexController extends Controller
         return view('public.news.show', compact('news', 'category', 'comment_count'));
     }
 
+    /**
+     * Render page with news, which related to specific category
+     *
+     * @param $slug
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function newsFromCategory($slug)
     {
-        if (is_null(Category::where('slug', $slug)->first())){
+        $news = Category::where('slug', $slug)->first();
+
+        if (is_null($news)){
 
             return abort(404);
         }
-        $news = Category::where('slug', $slug)->first()->news()->paginate(5);
+
+        $news = $news->news()->paginate(5);
 
         if ($news->isEmpty()){
 
@@ -75,19 +97,41 @@ class IndexController extends Controller
         return view('public.news.index', compact('news'));
     }
 
+    /**
+     * Render page with news, which related to specific tags
+     * @param $tag
+     * @param Tag $tags
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function newsFromTag($tag, Tag $tags)
     {
+
         $news = $tags->where('name', $tag)->first()->news()->paginate(5);
+
+        if (is_null($news)){
+
+            return abort(404);
+        }
 
         return view('public.news.index', compact('news'));
 
     }
+
+    /**
+     * Adding a person to the list of newsletter recipients.
+     *
+     * @param SubscribeRequest $request
+     * @param Subscribe $subscribe
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
 
     public function subscribe(SubscribeRequest $request, Subscribe $subscribe)
     {
         try {
 
             $subscribe->create($request->except(['_token']));
+
         } catch (\Exception $e){
 
             return response(json_encode(['status' => 'error']), 500);
@@ -96,6 +140,12 @@ class IndexController extends Controller
         return response(json_encode(['status' => 'ok']), 200);
     }
 
+    /**
+     * Getting ajax request and searching given tag
+     *
+     * @param Request $request
+     * @return string
+     */
 
     public function searchTag(Request $request)
     {
@@ -109,9 +159,14 @@ class IndexController extends Controller
             $tag['link'] = action('IndexController@newsFromTag', ['tag' => $tag['name']]);
         }
 
-
         return json_encode($tags);
     }
+
+    /**
+     * Return list of all analytical articles.
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
 
     public function analyticalNews()
     {
@@ -125,6 +180,13 @@ class IndexController extends Controller
         return view('public.news.index', compact('news'));
     }
 
+    /**
+     * Render page, which adapting for display "Analytical" articles.
+     *
+     * @param $slug
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function analyticalNew($slug)
     {
         $news = News::where('analytical', '1')->where('slug', $slug)->get();
@@ -132,37 +194,47 @@ class IndexController extends Controller
         return view('public.news.index', compact('news'));
     }
 
+    /**
+     * Setting for current article number of users who currently reading
+     * and number of total reads.
+     *
+     * @param Request $request
+     * @param News $news
+     * @return string
+     */
+
     public function activeCheck(Request $request, News $news)
     {
-
-
-
-
         if($request->new_client == 1){
 
             ActiveClient::where('last_seen_at', '<', Carbon::now()->subSeconds(10))->delete();
-
             $news = $news->find($request->news_id);
+
             if (is_null($news->reads_count)){
+
                 $news->reads_count = 1;
                 $news->save();
             } else {
+
                 $news->reads_count++;
                 $news->save();
             }
         }
 
         try {
-            ActiveClient::create([
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'token' => $request->_token,
-                'news_id' => $request->news_id,
-                'last_seen_at' => Carbon::now()
+                ActiveClient::create([
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'token' => $request->_token,
+                    'news_id' => $request->news_id,
+                    'last_seen_at' => Carbon::now()
             ]);
         } catch (\Exception $e){
+
             try {
+
                 ActiveClient::where('token', $request->_token)->update(['last_seen_at' => Carbon::now()]);
+
             } catch (\Exception $e){
 
                 return json_encode([
@@ -178,13 +250,9 @@ class IndexController extends Controller
 
         }
 
-
         return json_encode([
             'reads_count' => News::where('id', $request->news_id)->get(['reads_count'])->first()->reads_count,
             'active_clients' => ActiveClient::where('last_seen_at', '>', Carbon::now()->subSeconds(10))->distinct(['token'])->count()
         ]);
-
-
     }
-
 }

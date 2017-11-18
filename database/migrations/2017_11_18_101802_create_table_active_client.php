@@ -21,7 +21,6 @@ class CreateTableActiveClient extends Migration
             $table->timestamp('last_seen_at');
             $table->integer('news_id')->unsigned();
 
-
             $table->foreign('news_id')
                 ->references('id')
                 ->on('news')

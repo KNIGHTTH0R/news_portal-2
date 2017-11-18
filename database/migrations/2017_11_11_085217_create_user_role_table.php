@@ -29,8 +29,6 @@ class CreateUserRoleTable extends Migration
                 ->on('role')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-
-//            $table->unique(['user_id', 'role_id']);
         });
     }
 

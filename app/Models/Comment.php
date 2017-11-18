@@ -50,14 +50,12 @@ class Comment extends Model
     {
         return $this->belongsToMany('App\Models\User', 'commentRate_user', 'comment_id', 'user_id')
             ->wherePivot('rate', 0);
-
     }
 
     public function rated_up()
     {
         return $this->belongsToMany('App\Models\User', 'commentRate_user', 'comment_id', 'user_id')
             ->wherePivot('rate', 1);
-
     }
 
 }

@@ -18,12 +18,14 @@ class UserRoleTableSeeder extends Seeder
             'created_at' =>  \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ]);
+
         DB::table('user_role')->insert([
             'user_id' => 2,
             'role_id' => 2,
             'created_at' =>  \Carbon\Carbon::now(),
             'updated_at' => \Carbon\Carbon::now(),
         ]);
+
         DB::table('user_role')->insert([
             'user_id' => 3,
             'role_id' => 2,

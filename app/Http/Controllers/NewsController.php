@@ -15,55 +15,60 @@ use App\Http\Requests\NewsRequest;
 use \Auth;
 use Illuminate\Support\Facades\Input;
 
+/** articles CRUD
+ * Class NewsController
+ * @package App\Http\Controllers
+ */
 class NewsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of articles which owned
+     * for current authenticate user.
+     *
+     * If user is "Admin" - display listing of all articles.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         if(Auth::user()->isAdmin()){
 
             $news = News::paginate(5);
+
         } else {
 
             $news = News::where('user_id', Auth::user()->id)->get();
         }
 
-
         return view('public.news.CRUD.index', compact('news'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new article.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
         $category_creation = Category::pluck('name', 'id');
         $category_creation->prepend('Все категории');
-
         $category = Category::with('news')->get();
 
         $tags = Tag::pluck('name');
-
 
         return view('public.news.CRUD.create', compact('category', 'category_creation', 'tags'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created article in database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param NewsRequest $request
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
     public function store(NewsRequest $request)
     {
-
-
         $img_title = UploadImageController::uploadImage($request->img_title, true);
 
         if ($img_title === false){
@@ -72,7 +77,6 @@ class NewsController extends Controller
 
             return redirect()->back()->withInput();
         }
-
 
         $news = News::firstOrNew(
             ['slug' => str_slug($request->title)],
@@ -85,13 +89,18 @@ class NewsController extends Controller
                     'body'        => $request->body
                 ]
             );
+
         if ($news->exists == false){
             if ($request->analytical){
+
                 $news->analytical = $request->analytical;
             }
             try {
+
                 $news->save();
+
                 if (!is_null($request->tags)) {
+
                     $tags = $this->attachTags($request->tags);
                     $news->tag()->attach($tags);
                 }
@@ -111,39 +120,50 @@ class NewsController extends Controller
 
             return redirect()->back()->withInput();
         }
-
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified article, just article content
+     * without everything's else, for example comments.
      *
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
+
     public function show($slug, News $news)
     {
         $news = $news->where('slug', $slug)->first();
+
+        if(is_null($news)){
+
+            return abort(404);
+        }
 
         return view('public.news.CRUD.show', compact('news'));
     }
 
     /**
-     * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
+     * Show the form for editing the specified article.
+     * @param $slug
+     * @param News $news
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+
     public function edit($slug, News $news)
     {
         $news = $news->where('slug', $slug)->first();
 
+        if(is_null($news)){
+
+            return abort(404);
+        }
+
         $category_creation = Category::pluck('name', 'id');
         $category_creation->prepend('Все категории');
-
         $category = Category::with('news')->get();
 
         $tags = Tag::pluck('name', 'id');
-
         $tags_owned = $news->tag->pluck('name', 'id');
 
         return view('public.news.CRUD.edit', compact(
@@ -156,12 +176,14 @@ class NewsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified article in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @param NewsRequest $request
+     * @param News $news
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
+
     public function update($id, NewsRequest $request, News $news)
     {
 
@@ -169,8 +191,11 @@ class NewsController extends Controller
                       ->where('slug',str_slug($request->title))
                       ->where('id', '!=', $id)
                       ->first();
+
         if (is_null($check)){
+
             $news = $news->find($id);
+
             if($request->hasFile('img_title')){
 
                 $img_title = UploadImageController::uploadImage($request->img_title, true);
@@ -187,9 +212,10 @@ class NewsController extends Controller
                 }
 
             } else {
-                $img_title = $news->img_title;
-            }
 
+                $img_title = $news->img_title;
+
+            }
 
             $news->fill([
                 'title' => $request->title,
@@ -199,15 +225,20 @@ class NewsController extends Controller
                 'user_id' => Auth::user()->id,
                 'body' => $request->body
             ]);
+
             if ($request->analytical){
+
                 $news->analytical = $request->analytical;
+
             } else {
+
                 $news->analytical = 0;
             }
+
             try {
 
-
                 $news->save();
+
                 if (!is_null($request->tags)) {
 
                     $tags = $this->syncTags($request->tags);
@@ -222,6 +253,7 @@ class NewsController extends Controller
             }
 
             return redirect()->action('NewsController@index');
+
         } else {
 
             session()->flash('flash_message_error', 'Статья с таким заголовком уже существует, придумайте другой заголовок!');
@@ -231,11 +263,13 @@ class NewsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified article from storage.
      *
-     * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @param News $news
+     * @return \Illuminate\Http\RedirectResponse
      */
+
     public function destroy($id, News $news)
     {
         $news->destroy($id);
@@ -243,7 +277,12 @@ class NewsController extends Controller
         return redirect()->action('NewsController@index');
     }
 
-
+    /**
+     * Attaching tags from request to article.
+     *
+     * @param $request_tags
+     * @return array
+     */
 
     private function attachTags($request_tags)
     {
@@ -253,6 +292,12 @@ class NewsController extends Controller
 
         return $tags_ids;
     }
+
+    /**
+     * Syncs tags and specified article
+     * @param $request_tags
+     * @return array
+     */
 
     private function syncTags($request_tags)
     {

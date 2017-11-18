@@ -23,7 +23,6 @@ footer > .container > h3 {
 }
 /* END OF Sticky footer styles */
 
-
 .mar-auto {
     margin: auto;
 }
@@ -34,7 +33,6 @@ footer > .container > h3 {
 .backToSite {
     color: white!important;
 }
-
 
 .fr-wrapper{
 
@@ -48,7 +46,6 @@ footer > .container > h3 {
 .slide-link:hover {
     text-decoration: underline;
 }
-
 
 .comment_head {
     background-color: lightgray;
@@ -221,5 +218,43 @@ footer > .container > h3 {
 .edit {
     text-decoration: underline;
     float: right; cursor: pointer;
+}
+
+.dropdown-submenu { position: relative }
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.dropdown-submenu:hover>.dropdown-menu { display: block }
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after { border-left-color: #ccc }
+.dropdown-submenu.pull-left { float: none }
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.moderate_comment_exception {
+    text-align: center;
 }
 

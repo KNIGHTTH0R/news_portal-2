@@ -19,8 +19,6 @@ Route::post('/subscribe', 'IndexController@subscribe');
 Route::get('/analytical/news', 'IndexController@analyticalNews');
 Route::get('/analytical/{}', 'IndexController@analyticalNew');
 
-
-
 Route::group(['prefix' => 'news'], function (){
     Route::get('/', 'NewsController@index');
     Route::get('/create', 'NewsController@create');
@@ -30,7 +28,6 @@ Route::group(['prefix' => 'news'], function (){
     Route::put('/{id}', 'NewsController@update');
     Route::delete('/{id}', 'NewsController@destroy');
 });
-
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin'], 'namespace' => 'Admin'], function (){
     Route::get('/', 'IndexController@index');
@@ -86,9 +83,5 @@ Route::group(['prefix' => 'api'], function (){
 
 });
 
-
 Route::get('/{slug}', 'IndexController@newsFromCategory');
 Route::get('/{category}/{slug}', 'IndexController@show');
-
-//Route::get('/home', 'HomeController@index')->name('home');
-//Route::get('/home', 'HomeController@index')->name('home');

@@ -75,6 +75,4 @@ class User extends Authenticatable
             return false;
         }
     }
-
-
 }

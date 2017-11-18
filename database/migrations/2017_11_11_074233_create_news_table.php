@@ -25,7 +25,6 @@ class CreateNewsTable extends Migration
             $table->integer('reads_count')->nullable(true);
             $table->timestamps();
 
-
             $table->foreign('category_id')
                 ->references('id')
                 ->on('category')

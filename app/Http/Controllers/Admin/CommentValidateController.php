@@ -9,7 +9,8 @@ use App\Http\Controllers\Controller;
 class CommentValidateController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the comments
+     * which are moderator verification.
      *
      * @return \Illuminate\Http\Response
      */
@@ -20,7 +21,13 @@ class CommentValidateController extends Controller
         return view('admin.comments.index', compact('comments'));
     }
 
-
+    /**
+     * Allow one chosen comment
+     *
+     * @param Request $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
 
     public function allow(Request $request, Comment $comment)
     {
@@ -29,10 +36,9 @@ class CommentValidateController extends Controller
         ]);
 
         try {
+
             $comment = $comment->find($request->comment_id);
-
             $comment->allowed = 1;
-
             $comment->save();
 
         } catch (\Exception $e) {
@@ -42,6 +48,14 @@ class CommentValidateController extends Controller
 
         return response(json_encode(['status' => 'ok']), 200);
     }
+
+    /**
+     * Allowing list of chosen comments
+     *
+     * @param Request $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
 
     public function massAllow(Request $request, Comment $comment)
     {
@@ -64,12 +78,13 @@ class CommentValidateController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Changing the specified comment.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, Comment $comment)
     {
         $request->validate([
@@ -77,26 +92,22 @@ class CommentValidateController extends Controller
             'body'       => 'required|max:255'
         ]);
 
-
-
         try {
+
             $comment = $comment->find($request->comment_id);
-
             $comment->body = $request->body;
-
             $comment->save();
+
         } catch (\Exception $e) {
 
             return response($e->getMessage(), 500);
         }
 
         return response(json_encode(['status' => 'ok']), 200);
-
-
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified comment.
      *
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
@@ -120,9 +131,9 @@ class CommentValidateController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified list of comments.
      *
-     * @param  \App\Models\Comment  $comment
+     * @array  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
     public function massDestroy(Request $request, Comment $comment)

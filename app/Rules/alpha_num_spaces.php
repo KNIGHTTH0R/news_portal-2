@@ -36,7 +36,6 @@ class alpha_num_spaces implements Rule
      */
     public function message()
     {
-//        return 'The :attribute may contain only letters, numbers, spaces and "-".';
         return 'Название :attribute может содержать только буквы, цифры, пробелы и дефисы.';
     }
 }

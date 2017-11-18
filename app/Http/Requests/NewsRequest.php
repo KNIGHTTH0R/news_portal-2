@@ -27,7 +27,6 @@ class NewsRequest extends FormRequest
      */
     public function rules()
     {
-//        dd($this->all());
         switch ($this->method()) {
             case 'POST':
                 return [
@@ -47,9 +46,7 @@ class NewsRequest extends FormRequest
                     'tags.*.name' => ['max:10', new alpha_num_spaces]
                 ];
                 break;
-
         }
-
 
     }
 }

@@ -15,9 +15,22 @@ use Illuminate\Support\Facades\Auth;
 class CommentController extends Controller
 {
 
+    /**
+     * Incrementing specified comment
+     *
+     * Checking if that user is owner of comment -
+     * - else aborting
+     *
+     * @param Request $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|string|\Symfony\Component\HttpFoundation\Response
+     *
+     */
+
     public function rate_up(Request $request, Comment $comment)
     {
         if(!Auth::check()){
+
             return response('Unauthorized', 401);
         }
 
@@ -28,7 +41,7 @@ class CommentController extends Controller
             $comment->rated_user()->attach(Auth::user()->id, ['rate' => 1]);
 
         } catch (\Exception $e){
-//            print_r(Auth::user()->rated_up->where('pivot.comment_id', $request->comment_id)->toArray());die;
+
             if (Auth::user()->rated_up->where('pivot.comment_id', $request->comment_id)->isNotEmpty()){
 
                 $comment->rated_user()->detach(Auth::user()->id);
@@ -37,7 +50,6 @@ class CommentController extends Controller
 
                 $comment->rated_user->where('pivot.user_id', Auth::user()->id)->first()->pivot->rate = 1;
                 $comment->rated_user->where('pivot.user_id', Auth::user()->id)->first()->pivot->save();
-
             }
         }
 
@@ -50,10 +62,24 @@ class CommentController extends Controller
         return json_encode($data);
     }
 
+    /**
+     * Decrementing specified comment
+     *
+     * Checking if that user is owner of comment -
+     * - else aborting
+     *
+     * @param Request $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|string|\Symfony\Component\HttpFoundation\Response
+     *
+     */
+
     public function rate_down(Request $request, Comment $comment)
     {
         if(!Auth::check()){
+
             return response('Unauthorized', 401);
+
         }
 
         $comment = $comment->find($request->comment_id);
@@ -69,10 +95,9 @@ class CommentController extends Controller
                 $comment->rated_user()->detach(Auth::user()->id);
 
             } else {
-//                print_r($comment->rated_user->where('pivot.user_id', Auth::user()->id)->toArray());die;
+
                 $comment->rated_user->where('pivot.user_id', Auth::user()->id)->first()->pivot->rate = 0;
                 $comment->rated_user->where('pivot.user_id', Auth::user()->id)->first()->pivot->save();
-
             }
         }
 
@@ -84,6 +109,15 @@ class CommentController extends Controller
 
         return json_encode($data);
     }
+
+    /**
+     * after rating up or down - refreshing
+     * ratings for current comment
+     *
+     * @param  $comment
+     * @return array
+     *
+     */
 
     private function refresh_rates($comment)
     {
@@ -103,11 +137,13 @@ class CommentController extends Controller
 
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created comment in database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CommentRequest $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
+
     public function set(CommentRequest $request, Comment $comment)
     {
         try {
@@ -120,6 +156,7 @@ class CommentController extends Controller
             ])->id;
 
             if (News::find($request->news_id)->category->protected){
+
                 $comment = $comment->find($id);
                 $comment->allowed = 0;
                 $comment->save();
@@ -127,39 +164,42 @@ class CommentController extends Controller
 
 
         } catch (\Exception $e){
-            return response('', 500);
 
+            return response('', 500);
         }
 
-
         return response(json_encode([
-                                    'comment'    => $request->comment,
-                                    'comment_id' => $id,
-                                    'parent_id'  => $request->parent_id,
-                                    'user_name'  => Auth::user()->name,
-                                    'time'       => Carbon::now()->diffForHumans()
-                                    ]),200);
+            'comment'    => $request->comment,
+            'comment_id' => $id,
+            'parent_id'  => $request->parent_id,
+            'user_name'  => Auth::user()->name,
+            'time'       => Carbon::now()->diffForHumans()
+            ]),
+            200);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Edit comment for specified id.
      *
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param CommentRequest $request
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
+
     public function edit(CommentRequest $request,Comment $comment)
     {
         try {
+
             $comment = $comment->find($request->comment_id);
+
             if(Auth::user()->id != $comment->user->id){
 
                 throw new \Exception('Кибер-полиция уже выехала за тобой');
-
             }
+
             if (Carbon::parse($comment->created_at)->addMinute() < Carbon::now()){
 
                 throw new \Exception('timeout, you can\'t modify message');
-
             }
 
             $comment->body = $request->comment;
@@ -178,30 +218,22 @@ class CommentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Remove the specified comment from database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param integer $id
+     * @param Comment $comment
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function update(Request $request, Comment $comment)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id, Comment $comment)
     {
         $comment = $comment->find($id);
 
         if ($comment->child->isEmpty()) {
+
             $comment->destroy($id);
         } else {
+
             $comment->delete($id);
         }
 

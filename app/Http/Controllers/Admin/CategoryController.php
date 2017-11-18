@@ -11,10 +11,11 @@ use Illuminate\Validation\Rule;
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the news categories.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $category = Category::get();
@@ -23,22 +24,28 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new category.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
 
         return view('admin.category.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
+    /** Validate, generate slug from title.
+     *
+     * Store a newly created category in database.
+     *
+     * If getting errors when storing in DB
+     * redirect back with inputs and errors
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -50,41 +57,39 @@ class CategoryController extends Controller
         $data['slug'] = str_slug($data['name']);
 
         try {
+
             Category::firstOrCreate($data);
+
         } catch (\Exception $e){
+
             session()->flash('flash_message', 'Что-то пошло не так, попробуйте еще раз!');
+
             return back();
         }
 
         session()->flash('flash_message', 'Успешно!');
 
         return redirect()->action('Admin\CategoryController@index');
-
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the specified category.
      *
-     * @param  \App\Models\Category  $category
+     * @param  string | category's slug      $slug
+     * @param  \App\Models\Category          $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
     public function edit($slug, Category $category)
     {
         try {
+
             $category = $category->where('slug', $slug)->first();
+
         } catch (\Exception $e){
+
             session()->flash('flash_message', 'Что-то пошло не так, попробуйте еще раз!');
+
             return back();
         }
 
@@ -92,16 +97,21 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified category in database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * If getting errors when storing in DB
+     * redirect back with inputs and errors
+     *
+     * @param   integer | categorie's id   $id
+     * @param  \Illuminate\Http\Request    $request
+     * @param  \App\Models\Category        $category
      * @return \Illuminate\Http\Response
      */
+
     public function update($id, Request $request, Category $category)
     {
-
         $request->validate([
+
             'name' => [
                 'required',
                 new alpha_num_spaces,
@@ -113,33 +123,44 @@ class CategoryController extends Controller
         $data['slug'] = str_slug($data['name']);
 
         try {
-            $category->find($id)->update($data);
+
+             $category->find($id)->update($data);
+
         } catch (\Exception $e){
+
             session()->flash('flash_message', 'Что-то пошло не так, попробуйте еще раз!');
+
             return back();
         }
+
         session()->flash('flash_message', 'Успешно!');
 
         return redirect()->action('Admin\CategoryController@index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified category\'s from database.
      *
-     * @param  \App\Models\Category  $category
+     * @param  integer | category's identifier  $id
+     * @param  \App\Models\Category             $category
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($id, Category $category)
     {
         try {
+
             $category->destroy($id);
+
         } catch (\Exception $e){
+
             session()->flash('flash_message', 'Что-то пошло не так, попробуйте еще раз!');
+
             return back();
         }
+
         session()->flash('flash_message', 'Успешно!');
 
         return redirect()->action('Admin\CategoryController@index');
-
     }
 }

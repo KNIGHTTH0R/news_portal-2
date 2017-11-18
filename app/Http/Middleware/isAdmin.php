@@ -9,6 +9,7 @@ class isAdmin
 {
     /**
      * Handle an incoming request.
+     * Checking if current user is SuperUser\Admin or not
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -19,6 +20,7 @@ class isAdmin
         if (Auth::user()->isAdmin() === true) {
 
             return $next($request);
+
         } else {
 
             return redirect('/');

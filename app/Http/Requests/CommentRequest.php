@@ -30,7 +30,6 @@ class CommentRequest extends FormRequest
      */
     public function rules()
     {
-
         switch ($this->method()){
 
             case 'POST':

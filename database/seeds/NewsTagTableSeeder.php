@@ -22,8 +22,6 @@ class NewsTagTableSeeder extends Seeder
                 ]);
             }
         }
-
-
     }
 
     private function rand_diff(array $array = [], int $length = 3, int $max = 182, int $min = 1){

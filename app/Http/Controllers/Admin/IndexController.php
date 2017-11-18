@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Storage;
 
 class IndexController extends Controller
 {
+    /**
+     * Main page admin-panel
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
 

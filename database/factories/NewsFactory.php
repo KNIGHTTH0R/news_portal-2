@@ -5,6 +5,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\News::class, function (Faker $faker) {
 
     $title = $faker->sentence(6 );
+
     return [
         'title' => $title,
         'img_title' => $faker->image('storage/app/public/images', 1100, 550, 'business', false),

@@ -16,6 +16,7 @@ class RoleTableSeeder extends Seeder
             "created_at" =>  \Carbon\Carbon::now(),
             "updated_at" => \Carbon\Carbon::now(),
         ]);
+
         DB::table('role')->insert([
             'name' => 'common',
             'created_at' =>  \Carbon\Carbon::now(),

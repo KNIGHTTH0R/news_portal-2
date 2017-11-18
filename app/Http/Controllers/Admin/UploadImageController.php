@@ -9,53 +9,32 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\Facades\Image;
 class UploadImageController extends Controller
 {
-
-
     /**
-     * Store a newly created resource in storage.
+     * Store a newly uploaded image file in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         if ($request->hasFile('image')) {
+
             $link = self::uploadImage($request->image);
             $link = url('/').'/' . $link;
-
 
             return response()
                 ->json(['link' => $link], 200, [], JSON_UNESCAPED_SLASHES);
         }
-
-
-
     }
 
     /**
-     * Display the specified resource.
+     * trying to store image, if validate will be successful
      *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @param UploadedFile $image
+     * @param bool $title
+     * @return bool|string
      */
-    public function show(Image $image)
-    {
-        //
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Image $image)
-    {
-        //
-    }
-
-
 
     public static function uploadImage(UploadedFile $image, $title = false)
     {
@@ -63,8 +42,10 @@ class UploadImageController extends Controller
 
         if($image->isValid()) {
             if (in_array($image->extension(), $extensionAllowed)) {
-                $path = $image->store('public/images');
+
+                $image->store('public/images');
                 $img = Image::make($image);
+
                 if ($title != true) {
 
                     if ($img->width() > 800) {
@@ -81,17 +62,18 @@ class UploadImageController extends Controller
                         });
                     }
                 } else {
+
                     $img->resize(1100, 550);
                 }
 
                 $img->save('storage/images/' . $image->hashName());
 
                 return 'storage/images/' . $image->hashName();
+
             } else {
+
                 return false;
             }
-
         }
-
     }
 }

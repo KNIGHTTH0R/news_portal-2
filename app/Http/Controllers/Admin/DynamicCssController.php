@@ -8,12 +8,19 @@ use Illuminate\Support\Facades\Storage;
 
 class DynamicCssController extends Controller
 {
+
+    /**
+     * Get current custom-css data from json file.
+     *
+     * @return \Illuminate\Http\Response|null
+     */
+
     public function get()
     {
-
         if (Storage::disk('local')->exists('custom_css/css.json') == false){
 
             return null;
+
         } else {
 
             $css = json_decode(Storage::get('custom_css/css.json'), true);
@@ -21,6 +28,14 @@ class DynamicCssController extends Controller
             return response()->view('css.custom', ['css' => $css], 200, ['Content-Type' => 'text/css']);
         }
     }
+
+    /**
+     * Getting custom css parameters from admin panel,
+     * and storing in json file.
+     *
+     * @param Request $css
+     * @return \Illuminate\Http\RedirectResponse
+     */
 
     public function post(Request $css)
     {
@@ -57,9 +72,7 @@ class DynamicCssController extends Controller
             ]);
 
             $css = $css->except(['_token']);
-
             $native[$css['selector']] = $css['css'];
-
             $text = json_decode(Storage::get('custom_css/css.json'), true);
 
             Storage::put('custom_css/css.json', json_encode(array_merge($text, $native)));
@@ -67,6 +80,13 @@ class DynamicCssController extends Controller
 
         return redirect()->back();
     }
+
+    /**
+     * Deleting custom css file.
+     *
+     * @param Request $css
+     * @return \Illuminate\Http\RedirectResponse
+     */
 
     public function destroy(Request $css)
     {
