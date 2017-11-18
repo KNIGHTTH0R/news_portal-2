@@ -1,5 +1,5 @@
 @extends('public.layouts.app')
-@section('pageTitle', 'title')
+@section('pageTitle', $news->title)
 @section('head')
 
     <style>

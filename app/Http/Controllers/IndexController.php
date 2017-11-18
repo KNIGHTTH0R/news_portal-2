@@ -61,8 +61,16 @@ class IndexController extends Controller
 
     public function newsFromCategory($slug)
     {
+        if (is_null(Category::where('slug', $slug)->first())){
 
+            return abort(404);
+        }
         $news = Category::where('slug', $slug)->first()->news()->paginate(5);
+
+        if ($news->isEmpty()){
+
+            return abort(404);
+        }
 
         return view('public.news.index', compact('news'));
     }
@@ -108,6 +116,11 @@ class IndexController extends Controller
     public function analyticalNews()
     {
         $news = News::where('analytical', '1')->paginate(5);
+
+        if ($news->isEmpty()){
+
+            return abort(404);
+        }
 
         return view('public.news.index', compact('news'));
     }

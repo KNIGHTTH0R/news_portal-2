@@ -17,7 +17,7 @@ class CreateTableActiveClient extends Migration
             $table->increments('id');
             $table->string('ip');
             $table->string('user_agent');
-            $table->string('token');
+            $table->string('token')->unique();
             $table->timestamp('last_seen_at');
             $table->integer('news_id')->unsigned();
 

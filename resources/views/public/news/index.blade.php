@@ -1,12 +1,10 @@
 @extends('public.layouts.app')
-@section('pageTitle', 'Статьи')
+@section('pageTitle', $news->first()->category->name)
 
 @section('body')
 
 <div class="container">
     <div class="row">
-
-
         @foreach($news as $article)
             <div class="col-12" style="margin-top: 100px">
                 <a href="{{ action('IndexController@show', ['category' => $article->category->slug, 'slug' => $article->slug]) }}"><h3>{{ $article->title }}</h3></a>
@@ -32,15 +30,12 @@
             </div>
         @endforeach
         <div class="container">
-{{--            {{ dd($news->onFirstPage()) }}--}}
+
             {{ $news->links('vendor.pagination.default') }}
+{{--            {{ $news->links('vendor.pagination.bootstrap-4') }}--}}
         </div>
 
     </div>
 </div>
 
-@endsection
-
-@section('end_of_body')
-    <script src="{{ asset('js/public.js') }}"></script>
 @endsection

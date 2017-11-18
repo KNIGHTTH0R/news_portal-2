@@ -18,5 +18,10 @@ class Category extends Model
         return $this->hasMany('App\Models\News');
     }
 
+    public function news_nav()
+    {
+        return $this->hasMany('App\Models\News');
+    }
+
 
 }

@@ -30,20 +30,22 @@
 
                 @if(isset($category))
                     @foreach($category as $key => $item)
+                        @if ($item->isNotEmpty())
                             <div class="btn-group">
-                                    <a href="{{action('IndexController@newsFromCategory', ['slug' => $item->slug])}}" class="btn btn-danger">{{ $item->name }}</a>
+                                    <a href="{{action('IndexController@newsFromCategory', ['slug' => $item->first()->category->slug])}}" class="btn btn-danger">{{ $item->first()->category->name }}</a>
 
                                     <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <span class="sr-only">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu">
-                                        @foreach($item->news as $var)
-
-                                        <a class="dropdown-item" href="{{ url($item->slug .'/'.$var->slug) }}">{{ $var->title }}</a>
+                                        @foreach($item as $new)
+                                            <a class="dropdown-item" href="{{ url($item->first()->category->slug .'/'.$new->slug) }}">{{ $new->title }}</a>
                                         @endforeach
                                     </div>
                             </div>
-                    @endforeach
+                        @endif
+                            @endforeach
+
                     </div>
                 @endif
 

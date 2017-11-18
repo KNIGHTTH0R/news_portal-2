@@ -43,7 +43,9 @@
 
     @include('public.layouts.__modal_delete')
 
-
+    <div class="container">
+        {{ $news->links('vendor.pagination.default') }}
+    </div>
 @endsection
 
 @section('end_of_body')

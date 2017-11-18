@@ -26,7 +26,7 @@ class NewsController extends Controller
     {
         if(Auth::user()->isAdmin()){
 
-            $news = News::get();
+            $news = News::paginate(5);
         } else {
 
             $news = News::where('user_id', Auth::user()->id)->get();

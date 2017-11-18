@@ -7,7 +7,7 @@
                 @foreach ($elements as $element)
                      @if (is_array($element))
                          @foreach ($element as $page => $url)
-                             @if ($page != 1 && $page != $paginator->lastPage())
+                             @if ($page != 1 && $page != $paginator->lastPage() && $page != $paginator->lastPage() -1 && $page != 2)
                                  @if ($page == $paginator->currentPage())
                                         <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
                                     @else
@@ -32,9 +32,7 @@
     </div>
 <div class="row">
     <div class="col-3 mar-auto">
-
     <ul class="pagination center-ul">
-
         {{-- First Page --}}
         @if($paginator->onFirstPage())
             <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">1</a></li>

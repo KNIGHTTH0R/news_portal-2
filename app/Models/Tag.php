@@ -15,7 +15,4 @@ class Tag extends Model
         return $this->belongsToMany('App\Models\News', 'news_tag', 'tag_id', 'news_id')
             ->withTimestamps();
     }
-
-
-
 }

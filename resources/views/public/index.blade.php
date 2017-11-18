@@ -1,6 +1,11 @@
 @extends('public.layouts.app')
 @section('pageTitle', 'News')
 @section('body')
+
+    {{--{{ dd(\App\Models\Category::with('news')->get()->map(function ($category) {--}}
+    {{--return $category =$category->news->take(5);--}}
+
+    {{--})) }}--}}
     <div class="container">
         <div class="row">
             <div class="col-12 w-100">
