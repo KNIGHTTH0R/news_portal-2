@@ -146,7 +146,6 @@ footer > .container > h3 {
 .dots:hover {
     text-decoration: underline;
     cursor: pointer;
-    /*color: blue;*/
 }
 
 .test {
@@ -163,7 +162,6 @@ footer > .container > h3 {
     border: 1px solid rgba(0,0,0,.125);
     border-radius: .25rem;
     padding: 25px;
-    /*visibility: hidden;*/
     display: none;
 }
 
@@ -260,9 +258,7 @@ footer > .container > h3 {
 
 .adv-left {
     float: left;
-    position: absolute;
     max-width: 350px;
-    /*max-height: 200px;*/
     word-break: break-all;
     top: 10%;
     left: 0;
@@ -270,9 +266,7 @@ footer > .container > h3 {
 
 .adv-right {
     float: right;
-    position: absolute;
     max-width: 350px;
-    /*max-height: 200px;*/
     word-break: break-all;
     top: 10%;
     right: 0;
@@ -282,8 +276,6 @@ footer > .container > h3 {
     padding: 20px;
     margin: 20px;
     border: 2px solid black;
-    /*width: 300px;*/
-    /*height: 300px;*/
 }
 
 .adv-head {
@@ -310,4 +302,9 @@ footer > .container > h3 {
 .popover {
     position: unset!important;
     display: none;
+}
+
+.row {
+    margin-left: unset!important;
+    margin-right: unset!important;
 }

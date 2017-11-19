@@ -32,11 +32,11 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        factory(App\Models\Tag::class, 182)->create();
-        factory(App\Models\News::class, 1000)->create();
+//        factory(App\Models\Tag::class, 30)->create();
+        factory(App\Models\News::class, 10)->create();
 
-        $this->call([
-            NewsTagTableSeeder::class
-        ]);
+//        $this->call([
+//            NewsTagTableSeeder::class
+//        ]);
     }
 }
