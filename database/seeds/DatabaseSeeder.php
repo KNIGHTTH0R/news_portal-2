@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
              CategoryTableSeeder::class,
          ]);
 
-        factory(App\Models\Tag::class, 24)->create();
-        factory(App\Models\News::class, 6)->create();
+        factory(App\Models\Tag::class, 182)->create();
+        factory(App\Models\News::class, 1000)->create();
 
         $this->call([
             NewsTagTableSeeder::class

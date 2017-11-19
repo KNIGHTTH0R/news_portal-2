@@ -11,7 +11,7 @@ class NewsTagTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i = 1; $i <= 6; $i++) {
+        for($i = 1; $i <= 1000; $i++) {
             $array = $this->rand_diff();
             for($j = 0; $j < 3; $j++) {
                 DB::table('news_tag')->insert([
@@ -37,7 +37,7 @@ class NewsTagTableSeeder extends Seeder
      *
      */
 
-    private function rand_diff(array $array = [], int $length = 3, int $max = 24, int $min = 1){
+    private function rand_diff(array $array = [], int $length = 3, int $max = 182, int $min = 1){
 
         for ($i = 0; $i < $length; $i++) {
             $array[] = rand($min, $max);
