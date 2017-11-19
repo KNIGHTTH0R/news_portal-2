@@ -106,6 +106,9 @@
                                     <hr>
                                 </li>
                                 @endif
+
+                             @else
+                                @include('public.layouts.__modal_comment_validation')
                             @endif
                         @endforeach
                 @endif

@@ -16,9 +16,21 @@ if (document.getElementById('send_comment') != null) {
 
             if (this.status == 200) {
 
+                if(response.permission === false){
+
+                    $('#comment_validation').modal('show');
+
+                    comment.className = 'form-control is-valid';
+                    comment.value = '';
+
+                    return;
+                }
+
                 if (response.action == 'edit'){
-                    console.log(response.body);
                     document.getElementById('comment_' + response.comment_id).getElementsByClassName('comment_body')[0].innerHTML = response.text;
+                    document.getElementById("form_comment_header").parentNode.removeChild(document.getElementById("form_comment_header"));
+                    document.getElementById('form_comment_area').appendChild(form_comment);
+                    comment.value = '';
                     return;
                 }
                     comment.className = 'form-control is-valid';
@@ -65,8 +77,107 @@ if (document.getElementById('send_comment') != null) {
                          document.getElementById('comment_' + response.comment_id).appendChild(hr);
                      }
 
-                    div_head.innerHTML = '<b>' + response.user_name + '</b> ' + response.time;
-                    div_body.innerHTML = response.comment;
+                div_head.innerHTML = '<b>' + response.user_name + '</b> ' + response.time;
+
+                var close_button = document.createElement('button');
+                close_button.setAttribute('type', 'button');
+                close_button.setAttribute('class', 'close');
+                close_button.setAttribute('data-id', response.comment_id);
+                close_button.setAttribute('data-del-comment', '');
+                close_button.setAttribute('id', 'del_comment_' + response.comment_id);
+
+                var close_span = document.createElement('span');
+                close_span.setAttribute('aria-hidden', 'true');
+                close_span.innerHTML = '×';
+                close_button.appendChild(close_span);
+
+                close_button.addEventListener('click', function () {
+
+                    $('#comment_' + close_button.getAttribute('data-id')).slideUp('slow');
+
+                    formData = new FormData();
+
+                    formData.set('comment_id', close_button.getAttribute('data-id'));
+                    formData.set('_method', 'delete');
+                    formData.set('_token', csrf_token);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("post", "/api/ajax/comment/" + close_button.getAttribute('data-id'));
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState != 4) return;
+
+                        if (this.status == 200) {
+                            var del_visual = document.getElementById('comment_' + close_button.getAttribute('data-id'));
+                            del_visual.parentNode.removeChild(del_visual);
+                        }
+                    };
+                    xhr.send(formData);
+                });
+
+                div_head.appendChild(close_button);
+
+
+                var edit_button = document.createElement('span');
+                edit_button.setAttribute('class', 'edit');
+                edit_button.setAttribute('data-id', response.comment_id);
+                edit_button.setAttribute('id', 'edit_' + response.comment_id);
+                edit_button.innerHTML = 'Редактировать';
+
+                edit_button.addEventListener('click', function () {
+
+                    form_comment.setAttribute('data-status', 'editing');
+
+                    var edit_text = document.getElementById('comment_' + this.getAttribute('data-id')).getElementsByClassName('comment_body')[0].innerHTML;
+
+                    document.getElementById('comment_' + this.getAttribute('data-id')).appendChild(form_comment);
+                    document.getElementsByName('comment')[0].innerHTML = edit_text;
+
+                    var method = document.createElement('input');
+                    method.setAttribute('type', 'hidden');
+                    method.setAttribute('name', '_method');
+                    method.setAttribute('class', '_method');
+                    method.setAttribute('value', 'PATCH');
+                    document.getElementById("form_comment").appendChild(method);
+                    comment.className = 'form-control';
+
+                    var comment_id = document.createElement("input");
+                    comment_id.setAttribute("type", "hidden");
+                    comment_id.setAttribute("name", "comment_id");
+                    comment_id.setAttribute("class", "edit_comment_id");
+                    comment_id.setAttribute("value", this.getAttribute('data-id'));
+                    document.getElementById("form_comment").appendChild(comment_id);
+
+                    if (document.getElementById('form_comment_header') == null) {
+
+                        var header = document.createElement("h3");
+                        header.setAttribute("id", 'form_comment_header');
+                        header.innerHTML = 'Оставить комментарий';
+                        document.getElementById("form_comment_area").appendChild(header);
+
+                        header.addEventListener('click', function () {
+
+                            comment.className = 'form-control';
+                            comment_error.style.display = 'none';
+                            comment.value = '';
+                            comment.setAttribute('placeholder', 'Ваш комментарий');
+
+                            header.parentNode.removeChild(header);
+
+                            var edit_remove1 = form_comment.getElementsByClassName('edit_comment_id')[0];
+                            var edit_remove2 = form_comment.getElementsByClassName('_method')[0];
+                            edit_remove1.parentNode.removeChild(edit_remove1);
+                            edit_remove2.parentNode.removeChild(edit_remove2);
+
+                            document.getElementById('form_comment_area').appendChild(form_comment);
+                        });
+                    }
+                });
+
+                div_head.appendChild(edit_button);
+
+                div_body.innerHTML = response.comment;
 
                     comment.value = '';
 
@@ -104,6 +215,8 @@ if (document.getElementById('send_comment') != null) {
 
                 }
             }
+
+
 
         };
 
@@ -390,6 +503,8 @@ if (document.getElementsByClassName('edit') != null) {
 
     for (let edit of edits) {
         edit.addEventListener('click', function () {
+
+            form_comment.setAttribute('data-status', 'editing');
 
             var edit_text = document.getElementById('comment_' + this.getAttribute('data-id')).getElementsByClassName('comment_body')[0].innerHTML;
 

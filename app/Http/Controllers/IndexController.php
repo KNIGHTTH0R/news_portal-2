@@ -107,12 +107,14 @@ class IndexController extends Controller
     public function newsFromTag($tag, Tag $tags)
     {
 
-        $news = $tags->where('name', $tag)->first()->news()->paginate(5);
+        $news = $tags->where('name', $tag)->first();
 
         if (is_null($news)){
 
             return abort(404);
         }
+
+        $news = $news->news()->paginate(5);
 
         return view('public.news.index', compact('news'));
 

@@ -21,7 +21,7 @@
             }
             if (typeof is_news_page != 'undefined'){
                 active();
-                setInterval(active, 3000);
+                setInterval(active, 5000);
             }
         };
 

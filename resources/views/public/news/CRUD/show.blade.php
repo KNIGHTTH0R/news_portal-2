@@ -2,7 +2,6 @@
 @section('pageTitle', $news->title)
 
 @section('body')
-
 <div class="container">
     <div class="row">
         <div class="mar-auto">

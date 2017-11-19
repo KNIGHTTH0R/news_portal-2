@@ -159,10 +159,13 @@ class CommentController extends Controller
             ])->id;
 
             if (News::find($request->news_id)->category->protected){
-                echo "PROTECTED";
+
+                $permission = false;
                 $comment = $comment->find($id);
                 $comment->allowed = 0;
                 $comment->save();
+            } else {
+                $permission = true;
             }
 
 
@@ -176,7 +179,8 @@ class CommentController extends Controller
             'comment_id' => $id,
             'parent_id'  => $request->parent_id,
             'user_name'  => Auth::user()->name,
-            'time'       => Carbon::now()->diffForHumans()
+            'time'       => Carbon::now()->diffForHumans(),
+            'permission' => $permission
             ]),
             200);
     }

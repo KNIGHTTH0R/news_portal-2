@@ -120,8 +120,11 @@ if (document.getElementById('select_all') != undefined){
         var checkboxes = document.querySelectorAll('[data-checkbox]');
         for (let checkbox of checkboxes){
               if (checkbox.checked == false){
+
                   checkbox.checked = true;
+
               } else if(checkbox.checked == true){
+
                   checkbox.checked = false;
               }
         }
@@ -154,6 +157,7 @@ if (document.querySelector('[data-mass-allowed]') != undefined){
             if (this.readyState != 4) return;
 
             if (this.status == 200) {
+                window.location.reload();
             }
 
             if (this.status == 422) {
@@ -190,6 +194,7 @@ if (document.querySelector('[data-mass-delete]') != undefined){
             if (this.readyState != 4) return;
 
             if (this.status == 200) {
+                window.location.reload();
             }
 
             if (this.status == 422) {

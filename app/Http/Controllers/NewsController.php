@@ -67,7 +67,6 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-
         $img_title = UploadImageController::uploadImage($request->img_title, true);
 
         if ($img_title === false){

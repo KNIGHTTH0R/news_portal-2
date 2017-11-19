@@ -56,6 +56,24 @@ class CategoryController extends Controller
         $data = $request->except(['_token']);
         $data['slug'] = str_slug($data['name']);
 
+        $protected_slugs = [
+            'tag',
+            'subscribe',
+            'news',
+            'admin',
+            'api'
+        ];
+
+        if (in_array($data['slug'], $protected_slugs )){
+
+            session()->flash('flash_message', 'Такое название зарезервированно системой, придумайте другое!');
+
+            return redirect()
+                    ->back()
+                    ->withInput();
+        }
+
+
         try {
 
             Category::firstOrCreate($data);
@@ -121,6 +139,23 @@ class CategoryController extends Controller
 
         $data = $request->except(['_token']);
         $data['slug'] = str_slug($data['name']);
+
+        $protected_slugs = [
+            'tag',
+            'subscribe',
+            'news',
+            'admin',
+            'api'
+        ];
+
+        if (in_array($data['slug'], $protected_slugs )){
+
+            session()->flash('flash_message', 'Такое название зарезервированно системой, придумайте другое!');
+
+            return redirect()
+                ->back()
+                ->withInput();
+        }
 
         try {
 

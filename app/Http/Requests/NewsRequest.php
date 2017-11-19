@@ -27,6 +27,19 @@ class NewsRequest extends FormRequest
      */
     public function rules()
     {
+        $protected_slugs = [
+            'news',
+        ];
+
+        if (in_array(str_slug($this->title), $protected_slugs )){
+
+            session()->flash('flash_message', 'Такое название зарезервированно системой, придумайте другое!');
+
+            return redirect()
+                ->back()
+                ->withInput();
+        }
+
         switch ($this->method()) {
             case 'POST':
                 return [
