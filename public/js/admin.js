@@ -204,3 +204,41 @@ if (document.querySelector('[data-mass-delete]') != undefined){
         xhr.send(data);
     });
 }
+
+
+
+if (document.getElementsByClassName('adv-btn-del').length > 0){
+
+    var adv_del = document.getElementsByClassName('adv-btn-del');
+
+    for (let del of adv_del){
+        del.addEventListener('click', function () {
+           var id = this.getAttribute('data-id');
+
+
+            var data = new FormData();
+
+            data.set('_method', 'DELETE');
+            data.set('_token', csrf_token);
+
+            console.log(data);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/admin/advertisement/" + id);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState != 4) return;
+
+                if (this.status == 200) {
+                    window.location.reload();
+                }
+
+                if (this.status == 422) {
+                }
+            };
+
+            xhr.send(data);
+        });
+    }
+
+}

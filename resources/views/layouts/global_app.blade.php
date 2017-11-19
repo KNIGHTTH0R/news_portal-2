@@ -25,6 +25,13 @@
 
         return true;
     };
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
 </script>
 
 <footer class="footer">
@@ -32,6 +39,7 @@
         <h3>Footer</h3>
     </div>
 </footer>
+<script src="{{ asset('js/common.js') }}"></script>
 
 </body>
 </html>

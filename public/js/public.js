@@ -446,6 +446,17 @@ if (document.getElementById('subscribe_submit') != null){
 if (document.getElementById('search_input') != undefined){
     var ajax_search = document.getElementById('search_input');
 
+    ajax_search.addEventListener('blur', function () {
+       hide_search();
+    });
+
+    ajax_search.addEventListener('focus', function () {
+
+        if (document.getElementById('search_result').getAttribute('with-data') == 'true') {
+            $('#search_result').slideDown('slow');
+        }
+    });
+
     ajax_search.addEventListener('keyup', function () {
 
         var data = new FormData;
@@ -468,23 +479,24 @@ if (document.getElementById('search_input') != undefined){
 
                 if (response.length > 0) {
 
+                    document.getElementById('search_result').setAttribute('with-data', 'true');
+
                     for (let tag of response) {
 
                         document.getElementById('search_result').innerHTML += '<a href="'+ tag['link'] +'">'+ tag['name'] + '</a><br>';
-
                     }
                 } else {
 
                     document.getElementById('search_result').innerHTML = 'Ничего не найдено...';
-                    setTimeout(hide_search, 3000);
                 }
             }
 
             if (this.status == 422) {
 
+                document.getElementById('search_result').setAttribute('with-data', 'false');
                 document.getElementById('search_result').style.display = 'block';
                 document.getElementById('search_result').innerHTML = 'Ничего не найдено...';
-                setTimeout(hide_search, 3000);
+                // setTimeout(hide_search, 1);
             }
         };
 

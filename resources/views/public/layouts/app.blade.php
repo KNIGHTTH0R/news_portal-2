@@ -9,11 +9,20 @@
 @endsection
 @section('global-body')
     @include('public.layouts.__nav')
+
+    @include('public.advertisement.left-block')
+
     @yield('body')
+
+    @include('public.advertisement.right-block')
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
     @yield('end_of_body')
+
     @include('public.layouts.__modal_subscribe')
+
     <script>
         window.onload = function () {
             if (getCookie('subscribed') == undefined) {
@@ -31,13 +40,6 @@
 
         function subscribe_hide() {
             $('#subscribe').modal('hide');
-        }
-
-        function getCookie(name) {
-            var matches = document.cookie.match(new RegExp(
-                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-            ));
-            return matches ? decodeURIComponent(matches[1]) : undefined;
         }
     </script>
     <script src="{{ asset('js/public.js') }}"></script>

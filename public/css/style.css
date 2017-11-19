@@ -258,3 +258,56 @@ footer > .container > h3 {
     text-align: center;
 }
 
+.adv-left {
+    float: left;
+    position: absolute;
+    max-width: 350px;
+    /*max-height: 200px;*/
+    word-break: break-all;
+    top: 10%;
+    left: 0;
+}
+
+.adv-right {
+    float: right;
+    position: absolute;
+    max-width: 350px;
+    /*max-height: 200px;*/
+    word-break: break-all;
+    top: 10%;
+    right: 0;
+}
+
+.adv-admin {
+    padding: 20px;
+    margin: 20px;
+    border: 2px solid black;
+    /*width: 300px;*/
+    /*height: 300px;*/
+}
+
+.adv-head {
+    font-size: 2em;
+    text-align: center;
+}
+
+.adv-price {
+    text-align: center;
+    font-size: 1.5em;
+}
+.adv-div-price {
+    text-align: center;
+}
+
+.adv-price:hover {
+    font-size: 2em;
+    color: red;
+}
+.adv-btn-del {
+    float: right;
+}
+
+.popover {
+    position: unset!important;
+    display: none;
+}

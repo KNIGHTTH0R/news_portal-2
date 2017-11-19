@@ -52,6 +52,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'web', 'isAdmin'], '
         Route::delete('/{id}', 'CategoryController@destroy');
     });
 
+    Route::group(['prefix' => 'advertisement'], function (){
+        Route::get('/', 'AdvertisementController@index');
+        Route::get('/create/{side}/{position}', 'AdvertisementController@create');
+        Route::get('/{id}/edit', 'AdvertisementController@edit');
+        Route::post('/', 'AdvertisementController@store');
+        Route::put('/{id}', 'AdvertisementController@update');
+        Route::delete('/{id}', 'AdvertisementController@destroy');
+    });
+
 
 });
 

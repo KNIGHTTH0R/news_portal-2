@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\News;
+use App\Models\{Advertisement, Category, News};
 use Illuminate\Support\Facades\View;
-
 use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
@@ -19,10 +18,13 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('public.*', function($view)
         {
             $view
-                ->with('category', \App\Models\Category::with('news')->latest()->get()->map(function ($category) {
+                ->with('category', Category::with('news')->latest()->get()->map(function ($category) {
                     return $category = $category->news->take(5);
                 }))
-                ->with('analytical', \App\Models\News::where('analytical', 1)->latest()->limit(5)->get());
+                ->with('analytical', News::where('analytical', 1)->latest()->limit(5)->get())
+                ->with('adv_left', Advertisement::where('block_side', 'left')->get())
+                ->with('adv_right', Advertisement::where('block_side', 'right')->get());
+
         });
     }
 

@@ -15,8 +15,12 @@ class CreateAdvertisementTable extends Migration
     {
         Schema::create('advertisement', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('item_name');
+            $table->string('text');
+            $table->string('sale_text');
+            $table->string('sale_title');
             $table->string('seller');
+            $table->string('block_side');
+            $table->integer('block_position')->unsigned();
             $table->decimal('price', 10, 2);
             $table->decimal('sale_price', 10, 2);
             $table->timestamps();
