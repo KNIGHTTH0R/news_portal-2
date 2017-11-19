@@ -1,5 +1,5 @@
 @extends('public.layouts.app')
-@section('pageTitle', 'test')
+@section('pageTitle', $news->title)
 
 @section('body')
 
@@ -17,14 +17,12 @@
                     @endforeach
                 @endif
             </small>
-
             <div>
                 @if(isset($news->img_title))
                     <img src="{{ asset('storage/images/' . $news->img_title) }}">
                 @endif
                 {!!  $news->body !!}
             </div>
-
         </div>
     </div>
 </div>

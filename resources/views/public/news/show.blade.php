@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-12 mar-auto">
                 <h4>{{ $news->title }}</h4>
-                <small>Категория: {{ $news->category->name }}</small><br>
+                <small>Категория: <a href="{{ action('IndexController@newsFromCategory', ['slug' => $news->category->slug]) }}">{{ $news->category->name }}</a></small><br>
                 <small>Автор: {{ $news->user->name }}</small><br>
                 <small><i>Тэги: </i>
                     @if(empty($news->tag->pluck('name')->toArray()))
