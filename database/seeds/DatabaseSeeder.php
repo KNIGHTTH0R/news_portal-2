@@ -11,12 +11,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call([
-             RoleTableSeeder::class,
-             UserTableSeeder::class,
-             UserRoleTableSeeder::class,
-             CategoryTableSeeder::class,
-         ]);
+        $this->call([
+            RoleTableSeeder::class,
+            UserTableSeeder::class,
+            UserRoleTableSeeder::class,
+            CategoryTableSeeder::class,
+        ]);
+
+        for ($i = 1; $i <= 4; $i++ ) {
+            factory(App\Models\Advertisement::class, 1)->create([
+                'block_position' => $i,
+                'block_side' => 'left'
+            ]);
+        }
+
+        for ($i = 1; $i <= 4; $i++ ) {
+            factory(App\Models\Advertisement::class, 1)->create([
+                'block_position' => $i,
+                'block_side' => 'right'
+            ]);
+        }
 
         factory(App\Models\Tag::class, 182)->create();
         factory(App\Models\News::class, 1000)->create();
