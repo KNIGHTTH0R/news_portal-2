@@ -21,11 +21,10 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         $(document).ready(function() {
 
-            $('#tags').val({!! json_encode(array_keys($tags_owned->toArray())) !!}).select2({
+            $('#tags').val({!! json_encode($tags_owned->toArray()) !!}).select2({
                 tags: true,
                 tokenSeparators: [',', ' '],
                 multiple: true,

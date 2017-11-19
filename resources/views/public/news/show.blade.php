@@ -1,23 +1,19 @@
 @extends('public.layouts.app')
 @section('pageTitle', $news->title)
 @section('head')
-
     <style>
         .material-icons {
             font-size: 19px;!important;
         }
     </style>
-
 @endsection
 @section('body')
-
     <div class="container">
         <div class="row">
             <div class="col-12 mar-auto">
                 <h4>{{ $news->title }}</h4>
-                <small>Категория: {{ $news->category->name }}</small><br>
+                <small>Категория: <a href="{{ action('IndexController@newsFromCategory', ['slug' => $news->category->slug]) }}">{{ $news->category->name }}</a></small><br>
                 <small>Автор: {{ $news->user->name }}</small><br>
-
                 <small><i>Тэги: </i>
                     @if(empty($news->tag->pluck('name')->toArray()))
                         {{ ' Отсутствуют' }}
@@ -27,7 +23,6 @@
                         @endforeach
                     @endif
                 </small>
-
                 <div class="">
                     @if(isset($news->img_title))
                         <img src="{{ asset('storage/images/' . $news->img_title) }}">
@@ -43,7 +38,6 @@
                           {!!  $news->body !!}
                      @endif
                 </div>
-
             </div>
         </div>
             <div class="row">
@@ -51,10 +45,6 @@
                     <h3>Сейчас читают<span class="badge badge-secondary" id="active_clients"></span></h3>
                     <h3>Всего просмотров<span class="badge badge-secondary" id="reads_count"></span></h3>
                 </div>
-
-                {{--<div class="col-4 ">--}}
-                    {{--<h3>Всего просмотров<span class="badge badge-secondary">New</span></h3>--}}
-                {{--</div>--}}
             </div>
             <div class="row">
             <div class="col-12 mar-auto">
@@ -63,7 +53,7 @@
                 <ul id="comment_area">
                 @if($comment_count > 0)
                         @foreach($news->comment()->withTrashed()->where('parent_id', null)->orderBy('rate_up', 'DESC')->get() as $comment)
-                            @if ($comment->allowed == 1)
+                            @if ($comment->allowed !== 0)
                                 @if($comment->trashed())
                                     <li class="comment" id="comment_{{ $comment->id }}" data-owner="{{ $comment->user->name }}">
                                         <div class="comment_head_deleted">
@@ -74,7 +64,6 @@
                                         </div>
                                         <hr>
                                     </li>
-
                                     @if($comment->child()->withTrashed()->get()->isNotEmpty())
                                         @include('public.layouts.__nested_comment', ['nested_comment' => $comment->child()->withTrashed()->get(), 'parent_id' => $comment->id])
                                     @endif
@@ -85,11 +74,9 @@
                                         {{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}
                                         @if(Auth::check())
                                             @if($comment->user->name == Auth::user()->name)
-
                                             <button type="button" class="close" data-id="{{$comment->id}}" data-del-comment id="del_comment_{{$comment->id}}">
                                                 <span aria-hidden="true">×</span>
                                             </button>
-
                                             @if(\Carbon\Carbon::parse($comment->created_at)->addMinute() > \Carbon\Carbon::now())
                                                 <span class="edit{{ Auth::check() ? '': ' cursor-block' }}" data-id="{{ $comment->id }}" id="edit_{{ $comment->id }}">
                                                     редактировать
@@ -127,8 +114,6 @@
                 <div id="form_comment_area">
                     <form id="form_comment">
                         {{ csrf_field() }}
-
-                        {{--{!! Form::hidden('news_id', $news->id) !!}--}}
                         {!! Form::hidden('news_id', $news->id) !!}
                         <div class="form-group">
                             {!! Form::label('comment', 'Оставить коментарий') !!}
@@ -137,8 +122,6 @@
                         </div>
                         {!! Form::button('Отправить', ['class' => 'btn btn-primary', 'id' => 'send_comment']) !!}
                     </form>
-
-
                 </div>
                     @else
                          <div class="dropdown">
@@ -146,39 +129,32 @@
                             <button class="btn btn-secondary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Войти
                             </button>
-
                              <div class="dropdown-menu">
                                  <div class="container" style="max-width: 300px">
                                  <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                                      {{ csrf_field() }}
                                      <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                                          <label for="email" class="col-md-7 control-label">E-Mail Address</label>
-
                                          <div class="col-md-10">
                                              <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-
                                              @if ($errors->has('email'))
                                                  <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
+                                                    <strong>{{ $errors->first('email') }}</strong>
+                                                 </span>
                                              @endif
                                          </div>
                                      </div>
-
                                      <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                                          <label for="password" class="col-md-3 control-label">Password</label>
-
                                          <div class="col-md-10">
                                              <input id="password" type="password" class="form-control" name="password" required>
-
                                              @if ($errors->has('password'))
                                                  <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
+                                                    <strong>{{ $errors->first('password') }}</strong>
+                                                 </span>
                                              @endif
                                          </div>
                                      </div>
-
                                      <div class="form-group">
                                          <div class="col-md-7 col-md-offset-1">
                                              <div class="checkbox">
@@ -188,7 +164,6 @@
                                              </div>
                                          </div>
                                      </div>
-
                                      <div class="form-group">
                                          <div class="col-md-8 col-md-offset-1">
                                              <button type="submit" class="btn btn-primary">
@@ -207,13 +182,11 @@
                          </div>
                 @endauth
             </div>
-
-            </div>
+        </div>
     </div>
-    
     <script type="text/javascript">
         var is_news_page = true;
-        
+
         function active() {
             var new_client;
             if (getCookie('active') == undefined){
@@ -231,9 +204,9 @@
 
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/api/ajax/active_check");
-            // xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.onreadystatechange = function () {
+
                 if (this.readyState != 4) return;
 
                 if (this.status == 200) {
@@ -248,8 +221,6 @@
                     if (document.getElementById('reads_count') != undefined){
                         document.getElementById('reads_count').innerHTML = response.reads_count;
                     }
-
-
                 }
 
                 if (this.status == 422) {
@@ -259,8 +230,4 @@
             xhr.send(data);
         }
     </script>
-@endsection
-
-@section('end_of_body')
-
 @endsection

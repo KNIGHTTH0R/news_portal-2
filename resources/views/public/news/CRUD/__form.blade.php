@@ -18,14 +18,16 @@
             <h4 style="margin-top: 20px;">Тэги для статьи</h4>
             {!! Form::select('tags[][name]', $tags, $tags_owned,  ['class' => 'form-control', 'id' => 'tags', 'multiple'=>'multiple']) !!}
         </div>
-    @if ($errors->get('category'))
-        @foreach($errors->get('category') as $item)
+
+    @if ($errors->get('tags.*'))
+        @foreach($errors->get('tags.*') as $item)
             <div class="alert alert-danger">
-                {{$item}}
+                @foreach($item as $one)
+                    {{ $one }}
+                @endforeach
             </div>
         @endforeach
     @endif
-
 
     @if(isset($news->img_title))
         <img src="{{ asset('storage/images/' . $news->img_title) }}">
@@ -44,7 +46,7 @@
 
     <div class="form-group">
         <h4 style="margin-top: 20px;">Выберите категорию</h4>
-        {!! Form::select('category_id', $category_creation->toArray(), null, ['class' => 'form-control', 'id' => 'category_id']) !!}
+        {!! Form::select('category_id', ['Выберите категорию'] + $category_creation->toArray(), null, ['class' => 'form-control', 'id' => 'category_id']) !!}
     </div>
     @if ($errors->get('category_id'))
         @foreach($errors->get('category_id') as $item)
@@ -67,4 +69,3 @@
     @endif
 
 {!! Form::submit($submitButton, ['class' => 'btn btn-primary']) !!}
-

@@ -60,7 +60,6 @@ Route::group(['prefix' => 'api'], function (){
         Route::post('upload_image', 'Admin\UploadImageController@store');
         Route::post('search', 'IndexController@searchTag');
         Route::post('active_check', 'IndexController@activeCheck');
-
         Route::group(['prefix' => 'comment', 'middleware' => 'auth', 'namespace' => 'Admin'], function (){
             Route::post('/', 'CommentController@set');
             Route::get('/', 'CommentController@get');

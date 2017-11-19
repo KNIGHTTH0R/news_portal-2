@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
          ]);
 
         factory(App\Models\Tag::class, 182)->create();
-        factory(App\Models\News::class, 500)->create();
+        factory(App\Models\News::class, 1000)->create();
 
         $this->call([
             NewsTagTableSeeder::class

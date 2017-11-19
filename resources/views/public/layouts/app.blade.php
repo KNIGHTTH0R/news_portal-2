@@ -23,12 +23,12 @@
                 active();
                 setInterval(active, 3000);
             }
-
-
         };
+
         function subscribe_show() {
             $('#subscribe').modal('show');
         }
+
         function subscribe_hide() {
             $('#subscribe').modal('hide');
         }
@@ -41,5 +41,4 @@
         }
     </script>
     <script src="{{ asset('js/public.js') }}"></script>
-
 @endsection

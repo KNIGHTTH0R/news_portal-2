@@ -1,11 +1,6 @@
 @extends('public.layouts.app')
-@section('pageTitle', 'News')
+@section('pageTitle', 'Новости')
 @section('body')
-
-    {{--{{ dd(\App\Models\Category::with('news')->get()->map(function ($category) {--}}
-    {{--return $category =$category->news->take(5);--}}
-
-    {{--})) }}--}}
     <div class="container">
         <div class="row">
             <div class="col-12 w-100">
@@ -45,7 +40,6 @@
                 <h3>ТОП 3 новостей<h5>по комментариям</h5></h3>
                 <ul class="list-group">
                 @foreach($newsTop as $item)
-
                     <li class="list-group-item"><a href="{{ action('IndexController@show', ['category' => $item->category->slug, 'slug' => $item->slug]) }}">
                         {{ $item['title'] }}
                         <span class="badge badge-secondary">{{ $item->comment_count }}</span>

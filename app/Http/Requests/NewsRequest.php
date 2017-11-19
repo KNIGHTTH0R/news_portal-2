@@ -34,7 +34,7 @@ class NewsRequest extends FormRequest
                     'category_id' => ['required' , Rule::notIn(['0'])],
                     'body'        => ['required', 'min:3', 'string', new text_size],
                     'img_title'   => 'required|mimes:jpeg,jpg,png',
-                    'tags.*.name' => ['max:10', new alpha_num_spaces]
+                    'tags.*.name' => ['max:30', new alpha_num_spaces]
                 ];
                 break;
             case 'PUT':
@@ -43,7 +43,7 @@ class NewsRequest extends FormRequest
                     'category_id' => ['required' , Rule::notIn(['0'])],
                     'body'        => ['required', 'min:3', 'string', new text_size],
                     'img_title'   => 'mimes:jpeg,jpg,png',
-                    'tags.*.name' => ['max:10', new alpha_num_spaces]
+                    'tags.*.name' => ['max:30', new alpha_num_spaces]
                 ];
                 break;
         }
