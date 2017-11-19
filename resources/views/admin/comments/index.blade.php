@@ -4,7 +4,6 @@
             @if(session()->has('flash_message'))
                 <div class="alert alert-success" role="alert" id="alert">{{ session('flash_message') }}</div>
             @endif
-
             @if ($comments->isNotEmpty())
                 <table class="table">
                     <thead>
@@ -18,12 +17,9 @@
                         <th scope="col"><button class="btn btn-success" data-mass-allowed>Опубликовать выбранные</button></th>
                         <th colspan="2" scope="col"><button class="btn btn-danger" data-mass-delete>Удалить выбранные</button></th>
                         <th scope="col"><input id="select_all" type="checkbox"></th>
-
                     </tr>
                     </thead>
                     <tbody>
-
-
                     @foreach($comments as $comment)
                         <tr id="comment_row_id_{{$comment->id}}">
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -37,7 +33,6 @@
                             <td><button class="btn btn-danger" data-comment-id="{{ $comment->id }}" data-delete-button >Удалить</button></td>
                             <td><input type="checkbox" data-checkbox name="ids[]"value="{{ $comment->id }}"></td>
                         </tr>
-
                     @endforeach
                     </tbody>
                 </table>
@@ -45,5 +40,4 @@
                 <h4 class="moderate_comment_exception">Комментарии которые требуют проверки модератора - отсутствуют</h4>
             @endif
 @include('admin.layouts.__modal_delete')
-
 @endsection

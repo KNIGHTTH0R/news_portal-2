@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -8,7 +8,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('global-head')
     <link rel="stylesheet" href="{{ asset('api/other/css/custom.css') }}">
-
 </head>
 <body>
 
@@ -26,10 +25,12 @@
         return true;
     };
 </script>
+
 <footer class="footer">
     <div class="container">
         <h3>Footer</h3>
     </div>
 </footer>
+
 </body>
 </html>

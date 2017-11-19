@@ -11,7 +11,7 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Категория</th>
+            <th scope="col">Заголовок</th>
             <!--<th scope="col">Last Name</th>
             <th scope="col">Username</th>-->
         </tr>

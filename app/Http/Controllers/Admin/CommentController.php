@@ -146,6 +146,9 @@ class CommentController extends Controller
 
     public function set(CommentRequest $request, Comment $comment)
     {
+
+
+
         try {
 
             $id = $comment->create([
@@ -156,7 +159,7 @@ class CommentController extends Controller
             ])->id;
 
             if (News::find($request->news_id)->category->protected){
-
+                echo "PROTECTED";
                 $comment = $comment->find($id);
                 $comment->allowed = 0;
                 $comment->save();

@@ -11,7 +11,7 @@ class NewsTagTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i = 1; $i <= 500; $i++) {
+        for($i = 1; $i <= 6; $i++) {
             $array = $this->rand_diff();
             for($j = 0; $j < 3; $j++) {
                 DB::table('news_tag')->insert([
@@ -24,7 +24,20 @@ class NewsTagTableSeeder extends Seeder
         }
     }
 
-    private function rand_diff(array $array = [], int $length = 3, int $max = 182, int $min = 1){
+    /**
+     * Generating array with three absolutely different numbers.
+     * If one of the numbers is not unique,
+     * function called again and again.
+     *
+     * @param array $array
+     * @param int $length
+     * @param int $max
+     * @param int $min
+     * @return array
+     *
+     */
+
+    private function rand_diff(array $array = [], int $length = 3, int $max = 24, int $min = 1){
 
         for ($i = 0; $i < $length; $i++) {
             $array[] = rand($min, $max);

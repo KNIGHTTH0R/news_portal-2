@@ -10,11 +10,7 @@
                     {!! Form::open(['action' => 'Admin\CategoryController@store', 'method' => 'post']) !!}
                         @include('admin.category.__form', ['submitButton' => 'Создать'])
                     {!! Form::close() !!}
-
             </div>
         </div>
     </div>
-
-
-
 @endsection

@@ -1,8 +1,8 @@
 @extends('admin.layouts.app')
-@section('pageTitle', 'Admin panel')
+@section('pageTitle', 'CSS editor')
 @section('body')
-    <div class="container">
-   <div class="row">
+<div class="container">
+    <div class="row">
         <div class="col-2 offset-md-3">
             {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
             <div class="form-group">
@@ -10,14 +10,12 @@
                 {!! Form::select('body[background-color]', $active['body'] + $colors, null, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
             </div>
             {!! Form::close() !!}
-
             {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
             <div class="form-group">
                 {!! Form::label('nav[background-color]', 'Выберите цвет шапки сайта:') !!}
                 {!! Form::select('nav[background-color]', $active['nav'] + $colors, null, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
             </div>
             {!! Form::close() !!}
-
         </div>
             <div class="col-3">
             {!! Form::open(['url' => action('Admin\DynamicCssController@post')]) !!}
@@ -33,7 +31,6 @@
                     </div>
                 @endforeach
             @endif
-
             <div class="form-group">
                 {!! Form::label('css', 'ccs:') !!}
                 {!! Form::textarea('css', null, ['class' => 'form-control', 'size' => '5x5']) !!}
@@ -48,18 +45,14 @@
             {!! Form::submit('Изменить css', ['class' => 'btn btn-primary']) !!}
             {!! Form::close() !!}
         </div>
-
-
-
        <div class="col-2 offset-md-5">
            {!! Form::open(['url' => action('Admin\DynamicCssController@destroy'), 'method' => 'delete']) !!}
            <div class="form-group">
                {!! Form::hidden('reset', true, ['class' => 'form-control', 'onchange' => 'this.form.submit()']) !!}
            </div>
            {!! Form::submit('Сбросить весь пользовательский css', ['class' => 'btn btn-primary']) !!}
-
            {!! Form::close() !!}
        </div>
     </div>
-    </div>
+</div>
 @endsection

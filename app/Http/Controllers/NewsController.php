@@ -53,12 +53,10 @@ class NewsController extends Controller
     public function create()
     {
         $category_creation = Category::pluck('name', 'id');
-        $category_creation->prepend('Все категории');
-        $category = Category::with('news')->get();
 
-        $tags = Tag::pluck('name');
+        $tags = Tag::pluck('name', 'name');
 
-        return view('public.news.CRUD.create', compact('category', 'category_creation', 'tags'));
+        return view('public.news.CRUD.create', compact( 'category_creation', 'tags'));
     }
 
     /**
@@ -69,6 +67,7 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
+
         $img_title = UploadImageController::uploadImage($request->img_title, true);
 
         if ($img_title === false){
@@ -160,11 +159,12 @@ class NewsController extends Controller
         }
 
         $category_creation = Category::pluck('name', 'id');
-        $category_creation->prepend('Все категории');
+        $category_creation->put(0, 'Все категории');
+
         $category = Category::with('news')->get();
 
-        $tags = Tag::pluck('name', 'id');
-        $tags_owned = $news->tag->pluck('name', 'id');
+        $tags = Tag::pluck('name', 'name');
+        $tags_owned = $news->tag->pluck('name');
 
         return view('public.news.CRUD.edit', compact(
             'news',
@@ -186,7 +186,6 @@ class NewsController extends Controller
 
     public function update($id, NewsRequest $request, News $news)
     {
-
         $check = $news
                       ->where('slug',str_slug($request->title))
                       ->where('id', '!=', $id)
