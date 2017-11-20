@@ -47,7 +47,9 @@ class DynamicCssController extends Controller
                 'body' => 'sometimes|required'
             ]);
 
+
             $css = $css->except(['_token']);
+
 
             if (isset($css['nav'])){
 
@@ -73,9 +75,14 @@ class DynamicCssController extends Controller
 
             $css = $css->except(['_token']);
             $native[$css['selector']] = $css['css'];
-            $text = json_decode(Storage::get('custom_css/css.json'), true);
+            if (Storage::disk('local')->exists('custom_css/css.json')) {
+                $text = json_decode(Storage::get('custom_css/css.json'), true);
+                Storage::put('custom_css/css.json', json_encode(array_merge($text, $native)));
+            } else {
+                Storage::put('custom_css/css.json', json_encode($native));
+            }
 
-            Storage::put('custom_css/css.json', json_encode(array_merge($text, $native)));
+
         }
 
         return redirect()->back();
