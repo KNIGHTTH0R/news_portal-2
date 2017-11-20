@@ -6,7 +6,7 @@ use App\Http\Requests\SearchRequest;
 use App\Http\Requests\SubscribeRequest;
 use Illuminate\Http\Request;
 use App\Models\{
-    ActiveClient, Category, Comment, News, Subscribe, Tag
+    ActiveClient, Category, Comment, News, Subscribe, Tag, User
 };
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -293,5 +293,17 @@ class IndexController extends Controller
          $news = $news->paginate(5);
 
         return view('public.news.index', compact('news'));
+    }
+
+
+    public function userComments($user)
+    {
+
+        $user = User::where('name', $user)->get()->first()->comment()->whereNull('allowed')->orWhere('allowed', '=', 1)->paginate(5);
+
+
+
+        return view('public.user-comments.index', compact('user'));
+
     }
 }

@@ -16,7 +16,9 @@ if (document.getElementById('send_comment') != null) {
 
             if (this.status == 200) {
 
+
                 if(response.permission === false){
+
 
                     $('#comment_validation').modal('show');
 

@@ -20,6 +20,8 @@ Route::get('/analytical/news', 'IndexController@analyticalNews');
 Route::get('/analytical/{}', 'IndexController@analyticalNew');
 Route::post('/search', 'IndexController@newsFilterSearch');
 
+Route::get('/user/comments/{user}', 'IndexController@userComments');
+
 Route::group(['prefix' => 'news'], function (){
     Route::get('/', 'NewsController@index');
     Route::get('/create', 'NewsController@create');

@@ -7,7 +7,8 @@
                 @foreach ($elements as $element)
                      @if (is_array($element))
                          @foreach ($element as $page => $url)
-                             @if ($page != 1 && $page != $paginator->lastPage() && $page != $paginator->lastPage() -1 && $page != 2)
+                                {{--&& $page != $paginator->lastPage() -1 && $page != 2--}}
+                             @if ($page != 1 && $page != $paginator->lastPage())
                                  @if ($page == $paginator->currentPage())
                                         <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
                                     @else

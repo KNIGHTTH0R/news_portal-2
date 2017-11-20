@@ -70,7 +70,7 @@
                                 @else
                                 <li class="comment" id="comment_{{ $comment->id }}" data-owner="{{ $comment->user->name }}">
                                     <div class="comment_head">
-                                        <b>{{ $comment->user->name }}</b>
+                                        <a href="{{action('IndexController@userComments', ['user' => $comment->user->name])}}"><b>{{ $comment->user->name }}</b></a>
                                         {{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}
                                         @if(Auth::check())
                                             @if($comment->user->name == Auth::user()->name)
@@ -106,12 +106,13 @@
                                     <hr>
                                 </li>
                                 @endif
-
-                             @else
-                                @include('public.layouts.__modal_comment_validation')
                             @endif
                         @endforeach
+
                 @endif
+                    @if($news->category->protected == 1)
+                        @include('public.layouts.__modal_comment_validation')
+                    @endif
                 </ul>
                 @auth
                 <div id="form_comment_area">
@@ -136,13 +137,13 @@
                                  <div class="container" style="max-width: 300px">
                                  <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                                      {{ csrf_field() }}
-                                     <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                         <label for="email" class="col-md-7 control-label">E-Mail Address</label>
+                                     <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                                         <label for="name" class="col-md-7 control-label">Login</label>
                                          <div class="col-md-10">
-                                             <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-                                             @if ($errors->has('email'))
+                                             <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+                                             @if ($errors->has('name'))
                                                  <span class="help-block">
-                                                    <strong>{{ $errors->first('email') }}</strong>
+                                                    <strong>{{ $errors->first('name') }}</strong>
                                                  </span>
                                              @endif
                                          </div>
