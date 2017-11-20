@@ -10,6 +10,6 @@
         @endforeach
     @endif
 <div class="form-group">
-    {!! Form::checkbox('protected', '1') !!} Закрытая категория (целиком доступна только для авторизованных пользователей)
+    {!! Form::checkbox('protected', '1') !!} Комментарии в этой категории будут публиковаться после проверки модератором
 </div>
 {!! Form::submit($submitButton, ['class' => 'btn btn-primary']) !!}
