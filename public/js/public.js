@@ -392,7 +392,6 @@ if (document.getElementById('subscribe_submit') != null){
                 if (this.readyState != 4) return;
 
                 if (this.status == 200) {
-
                 }
 
                 var response = JSON.parse(this.responseText);
@@ -434,7 +433,7 @@ if (document.getElementById('subscribe_submit') != null){
                         document.getElementById('subscribe_email_error').style.display = 'none';
                         document.getElementById('subscribe_email_error').innerHTML = '';
 
-                        document.cookie = "subscribed=yes";
+                        document.cookie = "subscribed=yes; path=/";
 
                         setTimeout(subscribe_hide, 1000);
                     }
@@ -567,3 +566,5 @@ if (document.getElementsByClassName('edit') != null) {
         });
     }
 }
+
+
