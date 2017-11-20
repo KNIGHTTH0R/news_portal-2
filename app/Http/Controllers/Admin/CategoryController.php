@@ -61,7 +61,8 @@ class CategoryController extends Controller
             'subscribe',
             'news',
             'admin',
-            'api'
+            'api',
+            'search'
         ];
 
         if (in_array($data['slug'], $protected_slugs )){
