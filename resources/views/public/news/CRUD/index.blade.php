@@ -13,10 +13,9 @@
         </tr>
         </thead>
         <tbody>
-        @php $i = 0; @endphp
         @foreach($news as $item)
             <tr>
-                <th scope="row">{{ ++$i }}</th>
+                <th scope="row">{{ $loop->iteration }}</th>
                 <td><a href="{{ action('NewsController@show', ['slug' => $item->slug]) }}">{{ $item->title }}</a></td>
                 <td><a href="{{ action('NewsController@edit', ['slug' => $item->slug]) }}">Редактировать</a></td>
                 <td>

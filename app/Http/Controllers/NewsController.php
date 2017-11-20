@@ -38,7 +38,7 @@ class NewsController extends Controller
 
         } else {
 
-            $news = News::where('user_id', Auth::user()->id)->get();
+            $news = News::where('user_id', Auth::user()->id)->paginate(5);
         }
 
         return view('public.news.CRUD.index', compact('news'));
