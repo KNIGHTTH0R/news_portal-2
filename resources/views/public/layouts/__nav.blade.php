@@ -1,26 +1,34 @@
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light nav-color">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav">
-            @auth
-                @if(Auth::user()->isAdmin())
-                    <a class="navbar-brand" href="{{ url('admin') }}">Админ панель</a>
-                @endif
-            @endauth
-            @if (url()->current() != url('/'))
-                    <a class="navbar-brand btn btn-primary backToSite" href="{{ url('/') }}">На главную</a>
-            @endif
+    <div class="row nav-row">
+        <div class="col-3">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav">
+                    @auth
+                        @if(Auth::user()->isAdmin())
+                            <a class="navbar-brand" href="{{ url('admin') }}">Админ панель</a>
+                        @endif
+                    @endauth
+                    @if (url()->current() != url('/'))
+                            <a class="navbar-brand btn btn-primary backToSite" href="{{ url('/') }}">На главную</a>
+                    @endif
+                </div>
+            </div>
         </div>
-        <div class="mar-auto btn-group">
-            @if ($analytical->isNotEmpty())
-                <div class="btn-group">
-                    <a href="{{action('IndexController@analyticalNews')}}" class="btn btn-danger">Аналитические статьи</a>
-                    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu">
+
+
+        <div class="col-5">
+            <div class="mar-auto btn-group">
+                @if ($analytical->isNotEmpty())
+                    <div class="btn-group">
+                        <a href="{{action('IndexController@analyticalNews')}}" class="btn btn-danger">Аналитические статьи</a>
+                        <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
                             @foreach($analytical as $item)
                                 <li class="dropdown-item dropdown-submenu">
                                     <a tabindex="-1" class="dropdown-item" href="{{ url('analytical/'.$item->slug) }}">{{ $item->title }}</a>
@@ -48,8 +56,9 @@
                                     </ul>
                                 </li>
                             @endforeach
+                        </div>
                     </div>
-                </div>
+            </div>
             @endif
             @if(isset($category))
                 @foreach($category as $key => $item)
@@ -70,58 +79,64 @@
                     @endif
                 @endforeach
             @endif
-        </div>
 
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Поиск статей
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <div class="filter">
-                    <div class="container">
-                    {!! Form::open(['url' => action('IndexController@newsFilterSearch') ]) !!}
-                        @include('public.layouts.__search-form')
-                    {!! Form::close() !!}
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    </div>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div>
-        <form class="form-inline">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search_input">
-            <i class="material-icons">search</i>
-        </form>
-        <div id="search_result"></div>
-    </div>
-    <div class="collapse navbar-collapse" id="navbarNav2">
-        <div class="navbar-nav mar-left">
-                <ul class="navbar-nav ml-auto">
-                    @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Войти</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Регистрация</a></li>
-                    @else
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ Auth::user()->name }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{ action('NewsController@index') }}">Мои статьи</a>
-                            <a class="dropdown-item" href="{{ action('NewsController@create') }}">Создать статью</a>
-                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                Выйти
-                            </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Поиск статей
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="filter">
+                            <div class="container">
+                            {!! Form::open(['url' => action('IndexController@newsFilterSearch') ]) !!}
+                                @include('public.layouts.__search-form')
+                            {!! Form::close() !!}
+                            </div>
                         </div>
                     </div>
-                    @endguest
-                </ul>
+                </div>
+
         </div>
+
+
+        <div class="col-2">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search_input">
+                <i class="material-icons">search</i>
+            </form>
+            <div id="search_result"></div>
+        </div>
+        <div class="col-1 ">
+                <div class="collapse navbar-collapse" id="navbarNav2">
+                    <div class="navbar-nav mar-left">
+                        <ul class="navbar-nav ml-auto">
+                            @guest
+                                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Войти</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Регистрация</a></li>
+                            @else
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ Auth::user()->name }}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="{{ action('NewsController@index') }}">Мои статьи</a>
+                                    <a class="dropdown-item" href="{{ action('NewsController@create') }}">Создать статью</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                        Выйти
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        {{ csrf_field() }}
+                                    </form>
+                                </div>
+                            </div>
+                            @endguest
+                        </ul>
+                    </div>
+                </div>
+        </div>
+
     </div>
 </nav>
