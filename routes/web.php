@@ -19,6 +19,7 @@ Route::post('/subscribe', 'IndexController@subscribe');
 Route::get('/analytical/news', 'IndexController@analyticalNews');
 Route::get('/analytical/{}', 'IndexController@analyticalNew');
 Route::post('/search', 'IndexController@newsFilterSearch');
+Route::get('/search/', 'IndexController@newsFilterSearchPaginate');
 
 Route::get('/user/comments/{user}', 'IndexController@userComments');
 

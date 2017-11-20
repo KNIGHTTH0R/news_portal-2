@@ -26,7 +26,7 @@ class SearchRequest extends FormRequest
     {
         return [
             'category' => ['required'],
-            'date'     => ['required', Rule::in([0, 1, 2, 3, 4])],
+            'date'     => ['required'],
             'tags.*'     => ['required']
         ];
     }

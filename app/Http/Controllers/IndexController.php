@@ -261,38 +261,26 @@ class IndexController extends Controller
 
     public function newsFilterSearch(SearchRequest $request, News $news)
     {
-        if ($request->date != 0){
-            switch ($request->date) {
-                case 1:
-                    $news = $news->where('created_at', '>=', Carbon::now()->subDay());
-                    break;
-                case 2:
-                    $news = $news->where('created_at', '>=', Carbon::now()->subWeek());
-                    break;
-                case 3:
-                    $news = $news->where('created_at', '>=', Carbon::now()->subMonth());
-                    break;
-                case 4:
-                    $news = $news->where('created_at', '>=', Carbon::now()->subYear());
-                    break;
+        $url=[];
+
+
+
+        if ($request->exists('date')) {
+                $url['date'] = $request->date;
+        }
+
+
+        if ($request->exists('category')) {
+            if ($request->category != 0) {
+                $url['category'] = $request->category;
             }
         }
 
-        if ($request->category != 0){
-            $news = $news->whereHas('category', function ($q) use ($request){
-                $q->where('id','=', $request->category);
-            });
+        if ($request->exists('tags')) {
+                $url['tags'] = implode(',', $request->tags);
         }
 
-        if ($request->exists('tags')){
-            $news = $news->whereHas('tag', function ($q) use ($request){
-                $q->whereIn('id', $request->tags);
-            });
-        }
-
-         $news = $news->paginate(5);
-
-        return view('public.news.index', compact('news'));
+        return redirect()->action('IndexController@newsFilterSearchPaginate', $url);
     }
 
 
@@ -305,5 +293,41 @@ class IndexController extends Controller
 
         return view('public.user-comments.index', compact('user'));
 
+    }
+
+    public function newsFilterSearchPaginate(Request $request, News $news)
+    {
+
+        if (!is_null($request->tags)) {
+            $tags = explode(',', $request->tags);
+            $news = $news->whereHas('tag', function ($q) use ($tags){
+                $q->whereIn('id', $tags);
+            });
+        }
+
+        switch ($request->date) {
+            case 'last-day':
+                $news = $news->where('created_at', '>=', Carbon::now()->subDay());
+                break;
+            case 'last-week':
+                $news = $news->where('created_at', '>=', Carbon::now()->subWeek());
+                break;
+            case 'last-month':
+                $news = $news->where('created_at', '>=', Carbon::now()->subMonth());
+                break;
+            case 'last-year':
+                $news = $news->where('created_at', '>=', Carbon::now()->subYear());
+                break;
+        }
+
+        if ($request->category != 0) {
+            $news = $news->whereHas('category', function ($q) use ($request) {
+                $q->where('id', '=', $request->category);
+            });
+        }
+
+        $news = $news->paginate(5);
+
+        return view('public.news.index', compact('news'));
     }
 }
