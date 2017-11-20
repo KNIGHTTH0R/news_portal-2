@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\SubscribeRequest;
 use Illuminate\Http\Request;
 use App\Models\{
@@ -256,5 +257,41 @@ class IndexController extends Controller
             'reads_count' => News::where('id', $request->news_id)->get(['reads_count'])->first()->reads_count,
             'active_clients' => ActiveClient::where('last_seen_at', '>', Carbon::now()->subSeconds(10))->distinct(['token'])->count()
         ]);
+    }
+
+    public function newsFilterSearch(SearchRequest $request, News $news)
+    {
+        if ($request->date != 0){
+            switch ($request->date) {
+                case 1:
+                    $news = $news->where('created_at', '>=', Carbon::now()->subDay());
+                    break;
+                case 2:
+                    $news = $news->where('created_at', '>=', Carbon::now()->subWeek());
+                    break;
+                case 3:
+                    $news = $news->where('created_at', '>=', Carbon::now()->subMonth());
+                    break;
+                case 4:
+                    $news = $news->where('created_at', '>=', Carbon::now()->subYear());
+                    break;
+            }
+        }
+
+        if ($request->category != 0){
+            $news = $news->whereHas('category', function ($q) use ($request){
+                $q->where('id','=', $request->category);
+            });
+        }
+
+        if ($request->exists('tags')){
+            $news = $news->whereHas('tag', function ($q) use ($request){
+                $q->whereIn('id', $request->tags);
+            });
+        }
+
+         $news = $news->paginate(5);
+
+        return view('public.news.index', compact('news'));
     }
 }

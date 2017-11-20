@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <script src="https://code.jquery.com/jquery.js"></script>
+
     <title>@yield('pageTitle')</title>
     @yield('head')
 @endsection
@@ -44,5 +45,17 @@
             $('#subscribe').modal('hide');
         }
     </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.filter-select').select2({
+                tags: true,
+                tokenSeparators: [',', ' ']
+            });
+
+        });
+    </script>
+
     <script src="{{ asset('js/public.js') }}"></script>
 @endsection

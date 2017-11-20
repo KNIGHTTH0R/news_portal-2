@@ -18,6 +18,7 @@ Route::get('/tag/{tag}', 'IndexController@newsFromTag');
 Route::post('/subscribe', 'IndexController@subscribe');
 Route::get('/analytical/news', 'IndexController@analyticalNews');
 Route::get('/analytical/{}', 'IndexController@analyticalNew');
+Route::post('/search', 'IndexController@newsFilterSearch');
 
 Route::group(['prefix' => 'news'], function (){
     Route::get('/', 'NewsController@index');

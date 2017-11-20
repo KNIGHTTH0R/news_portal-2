@@ -308,3 +308,12 @@ footer > .container > h3 {
     margin-left: unset!important;
     margin-right: unset!important;
 }
+
+.filter {
+    /*padding: 15px;*/
+
+    /*background-color: white;*/
+
+    /*border: 1px solid rgba(0,0,0,.2);*/
+    width: 500px;
+}

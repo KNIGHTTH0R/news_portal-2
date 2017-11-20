@@ -77,9 +77,13 @@
                 Поиск статей
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="filter">
+                    <div class="container">
+                    {!! Form::open(['url' => action('IndexController@newsFilterSearch') ]) !!}
+                        @include('public.layouts.__search-form')
+                    {!! Form::close() !!}
+                    </div>
+                </div>
             </div>
         </div>
 

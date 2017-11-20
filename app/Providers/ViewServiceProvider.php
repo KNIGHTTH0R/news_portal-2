@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\{Advertisement, Category, News};
+use App\Models\{
+    Advertisement, Category, News, Tag
+};
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,7 +25,9 @@ class ViewServiceProvider extends ServiceProvider
                 }))
                 ->with('analytical', News::where('analytical', 1)->latest()->limit(5)->get())
                 ->with('adv_left', Advertisement::where('block_side', 'left')->get())
-                ->with('adv_right', Advertisement::where('block_side', 'right')->get());
+                ->with('adv_right', Advertisement::where('block_side', 'right')->get())
+                ->with('tags_filter', Tag::pluck('name', 'id'))
+                ->with('category_filter', Category::pluck('name', 'id'));
 
         });
     }
