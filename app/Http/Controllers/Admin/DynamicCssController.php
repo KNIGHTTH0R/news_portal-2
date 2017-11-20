@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class DynamicCssController extends Controller
 {
@@ -69,7 +70,7 @@ class DynamicCssController extends Controller
         } else {
 
             $css->validate([
-                'selector'  => 'required',
+                'selector'  => ['required', Rule::notIn(['body', '.nav-color'])],
                 'css' => 'required'
             ]);
 

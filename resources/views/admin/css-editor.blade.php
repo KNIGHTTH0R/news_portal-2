@@ -32,7 +32,7 @@
                 @endforeach
             @endif
             <div class="form-group">
-                {!! Form::label('css', 'ccs:') !!}
+                {!! Form::label('css', 'css:') !!}
                 {!! Form::textarea('css', null, ['class' => 'form-control', 'size' => '5x5']) !!}
             </div>
             @if ($errors->get('css'))
