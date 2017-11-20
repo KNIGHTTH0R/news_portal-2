@@ -21,7 +21,7 @@ class ViewServiceProvider extends ServiceProvider
         {
             $view
                 ->with('category', Category::with('news')->latest()->get()->map(function ($category) {
-                    return $category = $category->news->take(5);
+                    return $category = $category->news->sortByDesc('created_at')->take(5);
                 }))
                 ->with('analytical', News::where('analytical', 1)->latest()->limit(5)->get())
                 ->with('adv_left', Advertisement::where('block_side', 'left')->get())
