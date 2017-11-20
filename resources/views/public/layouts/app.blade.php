@@ -12,11 +12,15 @@
     @include('public.layouts.__nav')
 
     <div class="row">
-        @include('public.advertisement.left-block')
-
-        @yield('body')
-
-        @include('public.advertisement.right-block')
+        <div class="col-2">
+            @include('public.advertisement.left-block')
+        </div>
+        <div class="col-8">
+            @yield('body')
+        </div>
+        <div class="col-2">
+            @include('public.advertisement.right-block')
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
